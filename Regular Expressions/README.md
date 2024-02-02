@@ -9,11 +9,11 @@ Supported are the following quantifiers:
 
 - Wildcard `*` (asterisk):
   Matches zero or more any characters (can be combined with a following question mark `?` to mark the wildcard as "lazy").
-  To use a literal asterisk in the pattern, escape the asterisk with a preceding backslash `\\`.
+  To use a literal asterisk in the pattern, escape the asterisk with a preceding backslash `\`.
 
 - Single character `.` (dot):
   Matches any character (only one), however it MUST match one, if none is found the matching fails.
-  To use a literal dot in the pattern, escape the dot with a preceding backslash `\\`.
+  To use a literal dot in the pattern, escape the dot with a preceding backslash `\`.
 
 Any other character is taken as literal. The pattern can be marked case insensitive, so the casing does not mattern.
 

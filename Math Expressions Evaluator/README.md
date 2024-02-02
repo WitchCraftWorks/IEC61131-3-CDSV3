@@ -12,7 +12,7 @@ This is done in three steps:
 
 All values are using LREAL, as such provided values will be converted to LREAL.
 
-As such you can do basic math such as `5 + 3 + 2` or `5 + \\0 - \2` (`\\` denotes variables), but you can also "group" them using parenthesis `(5 + 3) * 2`.
+As such you can do basic math such as `5 + 3 + 2` or `5 + \0 - \2` (`\` denotes variables), but you can also "group" them using parenthesis `(5 + 3) * 2`.
 
 The following math operators are implemented as symbols:
 

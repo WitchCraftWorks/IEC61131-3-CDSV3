@@ -1,0 +1,110 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Calculates for a UTF-8 character from the given STRING the codepoint value as DWORD.
+// Disabling strict conformity allows the usage of the extended ASCII alphabet (ISO 8859-1, decimal 160-255),
+// as long as it doesn't form a valid UTF-8 byte sequence.
+// The return value signifies whether the conversion was successful and the codepoint is valid ("well formed").
+{attribute 'qualified_only'}
+FUNCTION FuUtf8CharToDword : BOOL
+VAR_INPUT
+    psInput: POINTER TO STRING(4);           // A pointer to the string - for technical reasons this is a STRING(4), although any length is supported
+    udiStringLength: UDINT;                  // The length of the string (in bytes, not codepoints)
+    xStrictConformity: BOOL;                 // Require strict conformity to the Unicode standard
+END_VAR
+VAR_OUTPUT
+    dwCodepoint: DWORD;                      // The codepoint value
+    usiByteLength: USINT(0..4);              // Provides the codepoint length in bytes
+END_VAR
+{library PRIVATE}
+VAR
+    tempChar1: BYTE;
+    tempChar2: BYTE;
+    tempChar3: BYTE;
+    tempChar4: BYTE;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+FuUtf8CharToDword := FALSE;
+dwCodepoint := 0;
+usiByteLength := 0;
+
+IF udiStringLength = 0 THEN
+    RETURN;
+END_IF
+
+tempChar1 := psInput^[0];
+
+IF
+    NOT xStrictConformity AND_THEN
+    tempChar1 >= 160 AND_THEN
+    tempChar1 <= 255 AND_THEN (
+        udiStringLength = 1 OR_ELSE (
+            udiStringLength > 1 AND_THEN NOT FuValidateUtf8BytesForLength2(tempChar1, psInput^[1])
+        ) OR_ELSE (
+            udiStringLength > 2 AND_THEN NOT FuValidateUtf8BytesForLength3(tempChar1, psInput^[1], psInput^[2])
+        ) OR_ELSE (
+            udiStringLength > 3 AND_THEN NOT FuValidateUtf8BytesForLength4(tempChar1, psInput^[1], psInput^[2], psInput^[3])
+        )
+    )
+THEN
+    // One byte character (ISO 8859-1 latin1)
+    
+    FuUtf8CharToDword := TRUE;
+    dwCodepoint := TO_DWORD(tempChar1);
+    usiByteLength := 1;
+ELSIF tempChar1 >= 240 THEN
+    // Four byte character
+    IF udiStringLength < 4 THEN
+        RETURN;
+    END_IF
+    
+    tempChar2 := psInput^[1];
+    tempChar3 := psInput^[2];
+    tempChar4 := psInput^[3];
+    
+    IF NOT FuValidateUtf8BytesForLength4(tempChar1, tempChar2, tempChar3, tempChar4) THEN
+        RETURN;
+    END_IF
+    
+    FuUtf8CharToDword := TRUE;
+    dwCodepoint := SHL((TO_DWORD(tempChar1) AND 16#07), 18) OR SHL((TO_DWORD(tempChar2) AND 16#3F), 12) OR SHL((TO_DWORD(tempChar3) AND 16#3F), 6) OR (TO_DWORD(tempChar4) AND 16#3F);
+    usiByteLength := 4;
+ELSIF tempChar1 >= 224 THEN
+    // Three byte charater
+    IF udiStringLength < 3 THEN
+        RETURN;
+    END_IF
+    
+    tempChar2 := psInput^[1];
+    tempChar3 := psInput^[2];
+    
+    IF NOT FuValidateUtf8BytesForLength3(tempChar1, tempChar2, tempChar3) THEN
+        RETURN;
+    END_IF
+    
+    FuUtf8CharToDword := TRUE;
+    dwCodepoint := SHL((TO_DWORD(tempChar1) AND 16#0F), 12) OR SHL((TO_DWORD(tempChar2) AND 16#3F), 6) OR (TO_DWORD(tempChar3) AND 16#3F);
+    usiByteLength := 3;
+ELSIF tempChar1 >= 194 THEN
+    // Two byte character
+    IF udiStringLength < 2 THEN
+        RETURN;
+    END_IF
+    
+    tempChar2 := psInput^[1];
+    
+    IF NOT FuValidateUtf8BytesForLength2(tempChar1, tempChar2) THEN
+        RETURN;
+    END_IF
+    
+    FuUtf8CharToDword := TRUE;
+    dwCodepoint := SHL((TO_DWORD(tempChar1) AND 16#1F), 6) OR (TO_DWORD(tempChar2) AND 16#3F);
+    usiByteLength := 2;
+ELSIF tempChar1 >= 128 THEN
+    // Invalid leader byte value
+    RETURN;
+ELSE
+    // One byte character (ASCII)
+    
+    FuUtf8CharToDword := TRUE;
+    dwCodepoint := TO_DWORD(tempChar1);
+    usiByteLength := 1;
+END_IF

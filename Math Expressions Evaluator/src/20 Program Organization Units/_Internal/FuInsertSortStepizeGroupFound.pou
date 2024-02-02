@@ -1,0 +1,78 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Slightly modified version of:
+// https://forge.codesys.com/forge/talk/Runtime/thread/6ae1b1ff98/#31a5/f035/66da/5ba5/1553/b75d/ce46
+//
+// This version uses instead of basic datatypes a struct and sorts it by {group number} and then {token index}
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuInsertSortStepizeGroupFound : BOOL
+VAR_INPUT
+    pbBuffer: POINTER TO BYTE;                           // Pointer to buffer (array)
+    diElements: DINT;                                    // Array length
+END_VAR
+{library PRIVATE}
+VAR
+    tempDataSize: UINT;                                  // Element size
+    tempIndex: DINT;                                     // Loop index
+    tempMinIndex: DINT;                                  // Loop lowest index tested
+    tempMaxIndex: DINT;                                  // Loop highest index tested
+    tempCurrentIndex: DINT;                              // Loop current tested element index
+    tempTemp: ARRAY [1..8] OF BYTE;                      // Store temp value
+    tempPtrElement1: POINTER TO typStepizeGroupFound;    // Pointer operator, current element
+    tempPtrElement2: POINTER TO typStepizeGroupFound;    // Pointer operator, insert element
+    tempElement1: typStepizeGroupFound;
+    tempElement2: typStepizeGroupFound;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+tempDataSize := SIZEOF(typStepizeGroupFound);
+
+FOR tempIndex := 1 TO diElements - 1 DO
+    // Highest index tested
+    tempMaxIndex := tempIndex;
+    
+    // Lowest index tested
+    tempMinIndex := -1;
+    
+    // Element we need to insert
+    tempPtrElement2 := pbBuffer + TO_UDINT(tempDataSize*tempIndex);
+    
+    REPEAT
+        // Current test index
+        tempCurrentIndex := tempMinIndex + (tempMaxIndex - tempMinIndex) / 2;
+        
+        // Get element at current test index
+        tempPtrElement1 := pbBuffer + TO_UDINT(tempDataSize*tempCurrentIndex);
+        
+        // Test for ordering
+        SysMem.SysMemCpy(pDest := ADR(tempElement1), pSrc := tempPtrElement1, udiCount := tempDataSize);
+        SysMem.SysMemCpy(pDest := ADR(tempElement2), pSrc := tempPtrElement2, udiCount := tempDataSize);
+        
+        IF tempElement1.uiGroupNumber = tempElement2.uiGroupNumber THEN
+            IF tempElement1.uiTokenIndex > tempElement2.uiTokenIndex THEN
+                tempMaxIndex := tempCurrentIndex;
+            ELSE
+                tempMinIndex := tempCurrentIndex;
+            END_IF
+        ELSIF tempElement1.uiGroupNumber > tempElement2.uiGroupNumber THEN
+            tempMaxIndex := tempCurrentIndex;
+        ELSE
+            tempMinIndex := tempCurrentIndex;
+        END_IF
+    UNTIL
+        (tempMaxIndex - tempMinIndex) < 2
+    END_REPEAT
+    
+    // Save value to insert
+    SysMem.SysMemCpy(pDest := ADR(tempTemp), pSrc := tempPtrElement2, udiCount := tempDataSize);
+    
+    // Move block
+    SysMem.SysMemMove(
+        pDest := (pbBuffer + tempDataSize * (TO_UDINT(tempMaxIndex) + 1)),
+        pSrc := (pbBuffer + TO_UDINT((tempDataSize * tempMaxIndex))),
+        udiCount := (tempDataSize * TO_UDINT(tempIndex - tempMaxIndex))
+    );
+    
+    // set key
+    SysMem.SysMemCpy(pDest := (pbBuffer + tempDataSize * TO_UDINT(tempMaxIndex)), pSrc := ADR(tempTemp), udiCount := tempDataSize);
+END_FOR
+
+FuInsertSortStepizeGroupFound := TRUE;

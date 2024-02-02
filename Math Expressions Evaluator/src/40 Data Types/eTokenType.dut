@@ -1,0 +1,16 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE eTokenType :
+(
+	INVALID := 0,
+    NUMBER,
+    VARIABLE,
+    GROUP_START,
+    GROUP_END,
+    MATH_OP,
+    FUNCTION_CALL,
+    FUNCTION_CALL_END,
+    INTERNAL_VAR := 99
+);
+END_TYPE

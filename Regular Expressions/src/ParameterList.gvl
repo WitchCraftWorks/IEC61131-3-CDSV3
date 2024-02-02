@@ -1,0 +1,5 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+    uiMaxPatternTokens: UINT := 255;    // The maximum amount of tokens to support parsing (compiling) - the counting starts from 0, so add 1 to the number in your mind
+END_VAR

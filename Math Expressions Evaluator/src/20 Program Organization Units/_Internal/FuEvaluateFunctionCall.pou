@@ -1,0 +1,141 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Evaluates a function call.
+// First all necessary arguments are resolved to LREAL and then the function gets executed.
+// The return value will indicate a successful evaluation.
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuEvaluateFunctionCall : BOOL
+VAR_INPUT
+    typFunctionToken: typExpressionToken;
+    uiMaxCursor: UINT;
+END_VAR
+VAR_IN_OUT
+    atTokens: ARRAY [*] OF typExpressionToken;
+    uiCursor: UINT;
+    
+    alrVariables: ARRAY [*] OF LREAL;
+    alrInternalVariables: ARRAY [*] OF LREAL;
+END_VAR
+VAR_OUTPUT
+    lrResult: LREAL;
+    sError: STRING;
+END_VAR
+{library PRIVATE}
+VAR
+    i: UINT;
+    j: UINT;
+    
+    tempArgs: ARRAY [0..8] OF LREAL;
+    tempHelperValue: LREAL;
+END_VAR
+VAR CONSTANT
+    CONST_PI: LREAL := 3.14159265359;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF typFunctionToken.eType <> eTokenType.FUNCTION_CALL THEN
+    sError := Standard.CONCAT('Invalid function call token at ', TO_STRING(uiCursor));
+    RETURN;
+END_IF
+
+IF uiCursor + typFunctionToken.uiArgsCount > uiMaxCursor THEN
+    sError := Standard.CONCAT('Not enough arguments for function call at ', TO_STRING(uiCursor));
+    RETURN;
+END_IF
+
+FOR i := 0 TO (typFunctionToken.uiArgsCount - 1) BY 1 DO
+    j := uiCursor + i + 1;
+    
+    IF NOT FuEvaluateTokenSingle(atTokens[j], j, alrVariables, alrInternalVariables, lrResult => tempArgs[i], sError => sError) THEN
+        RETURN;
+    END_IF
+END_FOR
+
+uiCursor := uiCursor + typFunctionToken.uiArgsCount;
+
+IF typFunctionToken.sIdentifier = Constants.FUN_ABS THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := ABS(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_ACOS THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := ACOS(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_ASIN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := ASIN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_ATAN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := ATAN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_CEIL THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := FPU.Ceil(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_COS THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := COS(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_DEG THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := tempArgs[0] * 180 / CONST_PI;
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_FLOOR THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := FPU.Floor(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_LOG THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := LOG(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_LN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := LN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_RAD THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := tempArgs[0] * CONST_PI / 180;
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_ROUND THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    IF (tempArgs[0] - FPU.Truncate(tempArgs[0])) >= 0.5 THEN
+        lrResult := FPU.Ceil(tempArgs[0]);
+    ELSE
+        lrResult := FPU.Floor(tempArgs[0]);
+    END_IF
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_SIN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := SIN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_SQRT THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := SQRT(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_TAN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := TAN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_TRUNC THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    tempHelperValue := EXPT(10, tempArgs[1]);
+    lrResult := FPU.Truncate((tempArgs[0] * tempHelperValue)) / tempHelperValue;
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_LIMIT THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := LIMIT(tempArgs[0], tempArgs[1], tempArgs[2]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_AVGA THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    tempHelperValue := 0.0;
+    FOR i := 0 TO (typFunctionToken.uiArgsCount - 1) BY 1 DO
+        tempHelperValue := tempHelperValue + tempArgs[i];
+    END_FOR
+    
+    lrResult := tempHelperValue / typFunctionToken.uiArgsCount;
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_MAX THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    lrResult := -1.7976931348623157E+308;
+    FOR i := 0 TO (typFunctionToken.uiArgsCount - 1) BY 1 DO
+        IF tempArgs[i] > lrResult THEN
+            lrResult := tempArgs[i];
+        END_IF
+    END_FOR
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_MIN THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    lrResult := 1.7976931348623157E+308;
+    FOR i := 0 TO (typFunctionToken.uiArgsCount - 1) BY 1 DO
+        IF tempArgs[i] < lrResult THEN
+            lrResult := tempArgs[i];
+        END_IF
+    END_FOR
+ELSE
+    sError := Standard.CONCAT('Function not implemented: ', typFunctionToken.sIdentifier);
+END_IF

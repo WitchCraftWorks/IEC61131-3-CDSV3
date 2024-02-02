@@ -1,0 +1,45 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Evaluates variables and internal variables to their LREAL value.
+// The return value will indicate a successful evaluation.
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuEvaluateVariable : BOOL
+VAR_INPUT
+    typToken: typExpressionToken;
+    uiCursor: UINT;                  // Only for error message
+END_VAR
+VAR_IN_OUT
+    alrVariables: ARRAY [*] OF LREAL;
+    alrInternalVariables: ARRAY [*] OF LREAL;
+END_VAR
+VAR_OUTPUT
+    lrResult: LREAL;
+    sError: STRING;
+END_VAR
+{library PRIVATE}
+VAR
+    tempVariableNr: UINT;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+CASE typToken.eType OF
+    eTokenType.VARIABLE:
+        tempVariableNr := TO_UINT(typToken.lrValue);
+        
+        IF LOWER_BOUND(alrVariables, 1) <= tempVariableNr AND_THEN tempVariableNr <= UPPER_BOUND(alrVariables, 1) THEN
+            FuEvaluateVariable := TRUE;
+            lrResult := alrVariables[tempVariableNr];
+        ELSE
+            sError := Standard.CONCAT('Unknown variable ', TO_STRING(tempVariableNr));
+        END_IF
+    
+    eTokenType.INTERNAL_VAR:
+        tempVariableNr := TO_UINT(typToken.lrValue);
+        
+        IF LOWER_BOUND(alrInternalVariables, 1) <= tempVariableNr AND_THEN tempVariableNr <= UPPER_BOUND(alrInternalVariables, 1) THEN
+            FuEvaluateVariable := TRUE;
+            lrResult := alrInternalVariables[tempVariableNr];
+        ELSE
+            sError := Standard.CONCAT('Unknown internal variable ', TO_STRING(tempVariableNr));
+        END_IF
+ELSE
+    sError := Standard.CONCAT('Not a variable token at position ', TO_STRING(uiCursor));
+END_CASE

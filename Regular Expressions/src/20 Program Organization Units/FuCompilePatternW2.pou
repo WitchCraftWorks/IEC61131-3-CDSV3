@@ -1,0 +1,13 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Same as FuCompilePatternW, except it doesn't take a pointer and has a fixed length.
+{attribute 'qualified_only'}
+FUNCTION FuCompilePatternW2 : BOOL
+VAR_INPUT
+    wsPattern: WSTRING(255);              // The pattern string to compile
+    xCaseInsensitive: BOOL := FALSE;      // Whether the pattern is case insensitive
+END_VAR
+VAR_OUTPUT
+    typPattern: typCompiledPatternW;      // The compiled pattern, for "FuMatchExpressionW"
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+FuCompilePatternW2 := FuCompilePatternW(ADR(wsPattern), TO_UDINT(Stu.StrLenW(ADR(wsPattern))), xCaseInsensitive, typPattern => typPattern);

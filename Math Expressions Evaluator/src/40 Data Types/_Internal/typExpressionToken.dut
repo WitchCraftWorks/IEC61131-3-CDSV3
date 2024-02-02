@@ -1,0 +1,11 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typExpressionToken :
+STRUCT
+    eType: eTokenType;
+    uiGroupNumber: UINT;
+    sIdentifier: STRING(5);
+    uiArgsCount: UINT;
+    xArgsVariable: BOOL;
+    lrValue: LREAL;
+END_STRUCT
+END_TYPE

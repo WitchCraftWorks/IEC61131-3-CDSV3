@@ -1,0 +1,14 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// A division by zero is not allowed and this ENUM describes how such a situation is handled.
+//  - ERROR: An error is returned
+//  - RESULT_IS_ZERO: The result is simply set to 0.0 and no error is returned
+//  - DIVISOR_IS_ONE: The divisor is set to 1.0 instead and the operation is being carried out
+{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE eDivisionByZeroHandling :
+(
+	ERROR := 0,
+    RESULT_IS_ZERO,
+    DIVISOR_IS_ONE
+);
+END_TYPE

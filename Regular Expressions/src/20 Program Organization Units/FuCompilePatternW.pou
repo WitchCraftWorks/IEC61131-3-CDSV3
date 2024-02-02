@@ -1,0 +1,148 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Compiles the pattern into a stream of tokens for matching.
+// This is the UTF-16 (WSTRING) version of FuCompilePattern.
+//
+// The alphabet can be matched case insensitive,
+// otherwise by default the pattern is case sensitive.
+// The case mapping table is NOT completely covered,
+// as such you MAY encounter missing case conversion
+// for some languages.
+//
+// A few examples of valid patterns:
+//  - 'A*bEd'
+//  - 'A*?bEd'
+//  - 'A.b*e*'
+//  - '*A\.b\*e*'
+//  - 'A?\bed'
+//
+// The return value signifies whether compilation was successful,
+// or the given pattern is invalid.
+{attribute 'qualified_only'}
+FUNCTION FuCompilePatternW : BOOL
+VAR_INPUT
+    pwsPattern: POINTER TO WSTRING(1);    // The pattern string to compile - for technical reasons this is a WSTRING(1), although any length is supported
+    udiPatternLength: UDINT;              // Pattern string length (in words (length in bytes/2), not codepoints)
+    xCaseInsensitive: BOOL := FALSE;      // Whether the pattern is case insensitive
+END_VAR
+VAR_OUTPUT
+    typPattern: typCompiledPatternW;      // The compiled pattern, for "FuMatchExpressionW"
+END_VAR
+{library PRIVATE}
+VAR
+    tempPointer: POINTER TO WSTRING(1);
+    
+    i: UDINT;
+    
+    tempChar: DWORD;
+    tempCharLength: UDINT;
+    
+    tempNextChar: DWORD;
+    tempNextCharLength: UDINT;
+    
+    tempIndex: UINT;
+    tempMaxStrIndex: UDINT;
+END_VAR
+VAR CONSTANT
+    CHAR_WILDCARD: DWORD := 42; // *
+    CHAR_LAZINESS: DWORD := 63; // ?
+    CHAR_DOT: DWORD := 46; // .
+    CHAR_ESCAPE: DWORD := 92; // \
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+FuCompilePatternW := FALSE;
+
+IF udiPatternLength = 0 THEN
+    RETURN;
+END_IF
+
+tempPointer := pwsPattern;
+
+i := 0;
+tempMaxStrIndex := udiPatternLength - 1;
+
+WHILE i <= tempMaxStrIndex DO
+    IF tempIndex > ParameterList.uiMaxPatternTokens THEN
+        EXIT;
+    END_IF
+    
+    IF NOT FuUtf16CharToDword(psInput := (tempPointer + (i * 2)), udiStringLength := (udiPatternLength - (i * 2)), dwCodepoint => tempChar, usiWordLength => tempCharLength) THEN
+        RETURN;
+    END_IF
+    
+    IF tempChar = 0 THEN
+        EXIT;
+    END_IF
+    
+    IF
+        i > tempMaxStrIndex OR_ELSE
+        NOT FuUtf16CharToDword(
+            psInput := (tempPointer + (i * 2) + (tempCharLength * 2)),
+            udiStringLength := (udiPatternLength - (i * 2) - (tempCharLength * 2)),
+            dwCodepoint => tempNextChar,
+            usiWordLength => tempNextCharLength
+        )
+    THEN
+        tempNextChar := 0;
+        tempNextCharLength := 0;
+    END_IF
+    
+    IF tempChar = CHAR_WILDCARD THEN // Wildcard (*)
+        typPattern.atTokens[tempIndex].eType := eTokenType.WILDCARD;
+        typPattern.atTokens[tempIndex].dwChar := 0; // Use dwChar as modifier to be lazy
+    ELSIF
+        tempChar = CHAR_LAZINESS AND_THEN
+        tempIndex > 0 AND_THEN
+        typPattern.atTokens[(tempIndex - 1)].eType = eTokenType.WILDCARD
+    THEN // Laziness (?), but only if previously wildcard, otherwise literal
+        typPattern.atTokens[(tempIndex - 1)].dwChar := 1;
+        
+        i := i + tempCharLength;
+        CONTINUE;
+    ELSIF tempChar = CHAR_DOT THEN // Single char (.)
+        typPattern.atTokens[tempIndex].eType := eTokenType.ANYCHAR;
+    ELSIF
+        tempChar = CHAR_ESCAPE AND_THEN (
+            tempNextChar = CHAR_WILDCARD OR_ELSE
+            tempNextChar = CHAR_DOT
+        )
+    THEN // Backslash (escape token for . or *, if followed by . or *)
+        typPattern.atTokens[tempIndex].eType := eTokenType.LITERAL;
+        typPattern.atTokens[tempIndex].dwChar := tempNextChar;
+        i := i + tempNextCharLength;
+    ELSE
+        typPattern.atTokens[tempIndex].eType := eTokenType.LITERAL;
+        typPattern.atTokens[tempIndex].dwChar := tempChar;
+        
+        IF xCaseInsensitive THEN
+            // Calculate for the ISO 8859-1 latin1 alphabet the uppercase or lowercase character number (efficient way)
+            IF tempChar >= 65 AND_THEN tempChar <= 90 THEN
+                // Uppercase A-Z
+                tempNextChar := tempChar + 32;
+            ELSIF tempChar >= 97 AND_THEN tempChar <= 122 THEN
+                // Lowercase a-z
+                tempNextChar := tempChar - 32;
+            ELSIF tempChar >= 192 AND_THEN tempChar <= 221 AND_THEN tempChar <> 215 THEN
+                // Uppercase ISO 8859-1
+                tempNextChar := tempChar + 32;
+            ELSIF tempChar >= 224 AND_THEN tempChar <= 253 AND_THEN tempChar <> 247 THEN
+                // Lowercase ISO 8859-1
+                tempNextChar := tempChar - 32; 
+            ELSE
+                // If we're not in the ISO 8859-1 latin1 alphabet range, use the UTF-8 function to calculate it
+                tempNextChar := FuUnicodeCodepointCaseConvert(tempChar);
+            END_IF
+        ELSE
+            tempNextChar := 0;
+        END_IF
+        
+        typPattern.atTokens[tempIndex].dwAlternativeChar := tempNextChar;
+    END_IF
+    
+    tempIndex := tempIndex + 1;
+    typPattern.uiCountTokens := tempIndex;
+    
+    i := i + tempCharLength;
+END_WHILE
+
+FuCompilePatternW := (tempIndex > 0);
+typPattern.xCaseInsensitive := xCaseInsensitive;

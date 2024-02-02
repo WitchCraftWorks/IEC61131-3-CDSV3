@@ -1,0 +1,59 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{library PRIVATE}
+{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT
+    CHAR_WHITESPACE: BYTE := 32;
+    CHAR_NEWLINE: BYTE := 10;
+    CHAR_CAR_RETURN: BYTE := 13;
+    
+    CHAR_VARIABLE: BYTE := 92; // \
+    CHAR_GROUP_START: BYTE := 40; // (
+    CHAR_GROUP_END: BYTE := 41; // )
+    
+    CHAR_COMMA: BYTE := 44; // ,
+    CHAR_DOT: BYTE := 46; // .
+    CHAR_LC_E: BYTE := 101; // e
+    
+    CHAR_ADD: BYTE := 43; // + (also used for sign)
+    CHAR_SUB: BYTE := 45; // - (also used for sign)
+    CHAR_MUL: BYTE := 42; // *
+    CHAR_DIV: BYTE := 47; // /
+    CHAR_EXP: BYTE := 94; // ^
+    CHAR_MOD: BYTE := 37; // %
+    
+    ASCII_ALPHA_START: BYTE := 65; // A
+    ASCII_ALPHA_END: BYTE := 90; // Z
+    
+    ASCII_NUM_START: BYTE := 48; // 0
+    ASCII_NUM_END: BYTE := 57; // 9
+    
+    MAX_FUN_ARGS: UINT := 9;
+    
+    // Single arg functions
+    FUN_ABS: STRING(5) := 'ABS';
+    FUN_ACOS: STRING(5) := 'ACOS';
+    FUN_ASIN: STRING(5) := 'ASIN';
+    FUN_ATAN: STRING(5) := 'ATAN';
+    FUN_CEIL: STRING(5) := 'CEIL';
+    FUN_COS: STRING(5) := 'COS';
+    FUN_DEG: STRING(5) := 'DEG';
+    FUN_FLOOR: STRING(5) := 'FLOOR';
+    FUN_LOG: STRING(5) := 'LOG';
+    FUN_LN: STRING(5) := 'LN';
+    FUN_RAD: STRING(5) := 'RAD';
+    FUN_ROUND: STRING(5) := 'ROUND';
+    FUN_SIN: STRING(5) := 'SIN';
+    FUN_SQRT: STRING(5) := 'SQRT';
+    FUN_TAN: STRING(5) := 'TAN';
+    
+    // Dual arg functions
+    FUN_TRUNC: STRING(5) := 'TRUNC';
+    
+    // Triple arg functions
+    FUN_LIMIT: STRING(5) := 'LIMIT';
+    
+    // Variable arg functions (2..9)
+    FUN_AVGA: STRING(5) := 'AVG';
+    FUN_MAX: STRING(5) := 'MAX';
+    FUN_MIN: STRING(5) := 'MIN';
+END_VAR

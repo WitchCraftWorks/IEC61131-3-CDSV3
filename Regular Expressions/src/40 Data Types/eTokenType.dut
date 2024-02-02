@@ -1,0 +1,11 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE eTokenType :
+(
+	INVALID := 0,
+    LITERAL,
+    ANYCHAR,
+    WILDCARD
+);
+END_TYPE

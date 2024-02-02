@@ -1,0 +1,7 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typExpressionOperationSteps :
+STRUCT
+    atSteps: ARRAY [0..ParameterList.uiMaxStepsPerOperation] OF typExpressionStep;
+    uiCountSteps: UINT;
+END_STRUCT
+END_TYPE

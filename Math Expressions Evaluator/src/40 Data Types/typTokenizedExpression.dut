@@ -1,0 +1,7 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typTokenizedExpression :
+STRUCT
+    atTokens: ARRAY [0..ParameterList.uiMaxExpressionTokens] OF typExpressionToken;
+    uiCountTokens: UINT;
+END_STRUCT
+END_TYPE

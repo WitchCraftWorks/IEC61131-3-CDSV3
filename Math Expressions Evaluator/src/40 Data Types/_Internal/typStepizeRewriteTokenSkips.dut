@@ -1,0 +1,8 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typStepizeRewriteTokenSkips :
+STRUCT
+    uiStart: UINT;
+    uiEnd: UINT;
+    uiVarNum: UINT;
+END_STRUCT
+END_TYPE

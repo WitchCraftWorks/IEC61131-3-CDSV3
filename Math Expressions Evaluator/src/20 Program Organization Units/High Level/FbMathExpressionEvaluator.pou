@@ -1,0 +1,95 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// This is a high level Math Expression Evaluator.
+// It uses the low level functions to build a high level API.
+// As such it combines the three fundamental low level functions.
+//
+// All expressions use LREAL as data type for operations, which is also the result output.
+//
+// The following math operation behaviour applies:
+//  - In general: If any of the operands is a special value (+Inf, -Inf, NaN), then an error is returned
+//  - For Division (/): Division by zero yields depending on ParameterList.eDivisionByZero into an error or not
+//  - For Modulo (%): Both operands are converted to LINT and the result is converted back to LREAL
+//
+// Once evaluation gets triggered, the first time it gets triggered (or on expression change)
+// it will tokenize and "stepize" the given expression. Once these steps pass successfully,
+// it will evaluate the expressions. These output will change state accordingly.
+//
+// This function block will reset the "xTrigger" IN_OUT variable once it's done.
+//
+// Since all the necessary low level functions are synchronous, execution of this function block
+// is also synchronous and thus xTrigger will get reset immediately after execution.
+{attribute 'qualified_only'}
+FUNCTION_BLOCK FbMathExpressionEvaluator
+VAR_INPUT
+    sExpression: STRING(255);                 // The expression string to tokenize
+END_VAR
+VAR_OUTPUT
+    xDone: BOOL;                              // Evaluation is done (either successfully or not) - set for one cycle
+    xError: BOOL;                             // Error during any of the evaluator steps
+    sError: STRING;                           // Error message (may also contain nonsense if function returns TRUE)
+    lrResult: LREAL;                          // Result output
+END_VAR
+VAR_IN_OUT
+    xTrigger: BOOL;                           // Trigger evaluation, gets automatically reset
+    alrVariables: ARRAY [*] OF LREAL;         // Variables to use
+END_VAR
+{library PRIVATE}
+VAR
+    staticUsedExpression: STRING(255);
+    staticSteppedExpression: typExpressionOperationSteps;
+END_VAR
+VAR_TEMP
+    tempSuccess: BOOL;
+    tempTokenizedExpression: typTokenizedExpression;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF xTrigger THEN
+    IF sExpression = '' THEN
+        xTrigger := FALSE;
+        xDone := TRUE;
+        xError := TRUE;
+        sError := 'Empty expression';
+        lrResult := 0.0;
+        RETURN;
+    END_IF
+    
+    IF staticUsedExpression <> sExpression THEN
+        staticUsedExpression := '';
+        
+        tempSuccess := FuTokenizeExpression(sExpression, typExpression => tempTokenizedExpression);
+        IF NOT tempSuccess THEN
+            xTrigger := FALSE;
+            xDone := TRUE;
+            xError := TRUE;
+            sError := 'Error during tokenize';
+            lrResult := 0.0;
+            RETURN;
+        END_IF
+        
+        tempSuccess := FuStepizeExpression(tempTokenizedExpression, typSteps => staticSteppedExpression);
+        IF NOT tempSuccess THEN
+            xTrigger := FALSE;
+            xDone := TRUE;
+            xError := TRUE;
+            sError := 'Error during stepize';
+            lrResult := 0.0;
+            RETURN;
+        END_IF
+        
+        staticUsedExpression := sExpression;
+    END_IF
+    
+    IF FuEvaluateExpression(staticSteppedExpression, alrVariables, lrResult => lrResult, sError => sError) THEN
+        // Assert error string is empty if no error
+        sError := '';
+    ELSE
+        xError := TRUE;
+    END_IF
+    
+    xTrigger := FALSE;
+    xDone := TRUE;
+    
+    RETURN;
+END_IF
+
+xDone := FALSE;

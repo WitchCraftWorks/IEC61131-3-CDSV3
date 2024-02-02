@@ -1,0 +1,161 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Turns a tokenized expression into a stepized expression,
+// providing steps for each "group" operation to be done,
+// including taking care of ordering.
+//
+// Group operations include function calls and expressions inside ().
+// Operations such as "1 + 5 - 2" are not split up and
+// are evaluated left to right from the evaluator.
+{attribute 'qualified_only'}
+FUNCTION FuStepizeExpression : BOOL
+VAR_INPUT
+    typTokenExpression: typTokenizedExpression;
+END_VAR
+VAR_OUTPUT
+    typSteps: typExpressionOperationSteps;
+END_VAR
+{library PRIVATE}
+VAR
+    i: UINT;
+    j: UINT;
+    
+    tempEndTokenIndex: UINT;
+END_VAR
+VAR // Data used throughout each loop iteration
+    tempFoundGroups: ARRAY [0..ParameterList.uiMaxExpressionTokens] OF typStepizeGroupFound;
+    tempCountFoundGroups: UINT;
+    
+    tempFoundGroupsTokens: ARRAY [0..ParameterList.uiMaxExpressionTokens] OF typExpressionToken;
+    tempCountFoundGroupsTokens: UINT;
+    
+    tempLastStartedGroups: ARRAY [0..ParameterList.uiMaxExpressionTokens] OF UINT;
+    tempCountLastStartedGroups: UINT;
+END_VAR
+VAR CONSTANT
+    {warning disable C0228}
+    INVALID_TOKEN: typExpressionToken := (eType := eTokenType.INVALID);
+    EMPTY_TOKEN_ARR: ARRAY [0..ParameterList.uiMaxExpressionTokens] OF typExpressionToken;
+    {warning restore C0228}
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF typTokenExpression.uiCountTokens = 0 THEN
+    RETURN;
+END_IF
+
+// Step 1: Find each group and make a list out of it
+FOR i := 0 TO (typTokenExpression.uiCountTokens - 1) BY 1 DO
+    IF
+        typTokenExpression.atTokens[i].eType = eTokenType.GROUP_START OR_ELSE
+        typTokenExpression.atTokens[i].eType = eTokenType.FUNCTION_CALL
+    THEN
+        tempFoundGroups[tempCountFoundGroups].uiTokenIndex := i;
+        tempFoundGroups[tempCountFoundGroups].uiGroupNumber := typTokenExpression.atTokens[i].uiGroupNumber;
+        
+        tempCountFoundGroups := tempCountFoundGroups + 1;
+    END_IF
+END_FOR
+
+// Skip step 2 and 3 if we found NO groups
+IF tempCountFoundGroups > 0 THEN
+    // Step 2: Sort the found groups array by group number and then token index
+    FuInsertSortStepizeGroupFound(ADR(tempFoundGroups), tempCountFoundGroups);
+    
+    // Step 3: Consume found groups, take the tokens and insert ASSIGN_INTERNAL_VAR tokens
+    //         -> Note: The found groups index + 1 corresponds to the internal variable number
+    FOR i := 0 TO (tempCountFoundGroups - 1) BY 1 DO
+        tempFoundGroupsTokens := EMPTY_TOKEN_ARR;
+        tempCountFoundGroupsTokens := 0;
+        
+        tempCountLastStartedGroups := 0;
+        tempEndTokenIndex := 0;
+        
+        FOR j := tempFoundGroups[i].uiTokenIndex TO (typTokenExpression.uiCountTokens - 1) BY 1 DO
+            IF typTokenExpression.atTokens[j].eType = eTokenType.INVALID THEN
+                CONTINUE;
+            END_IF
+            
+            IF typTokenExpression.atTokens[j].eType = eTokenType.GROUP_START AND_THEN typTokenExpression.atTokens[j].uiGroupNumber <> tempFoundGroups[i].uiGroupNumber THEN
+                // Another group started, we need to ignore those tokens now
+                tempLastStartedGroups[tempCountLastStartedGroups] := typTokenExpression.atTokens[j].uiGroupNumber;
+                tempCountLastStartedGroups := tempCountLastStartedGroups + 1;
+                
+                CONTINUE;
+            ELSIF
+                typTokenExpression.atTokens[j].eType = eTokenType.GROUP_END AND_THEN
+                tempCountLastStartedGroups > 0 AND_THEN
+                typTokenExpression.atTokens[j].uiGroupNumber = tempLastStartedGroups[(tempCountLastStartedGroups - 1)]
+            THEN
+                // Another group ended, we can now start caring again, if the count drops to 0
+                tempCountLastStartedGroups := tempCountLastStartedGroups - 1;
+                
+                CONTINUE; // Taking care of using the internal variable of each group will be done later using "tempSkipTokenHints"
+            ELSIF tempCountLastStartedGroups > 0 THEN
+                // As long as another group are still open, prevent the other two clauses (the elsif and else) from being able to execute
+                CONTINUE;
+            END_IF
+            
+            IF typTokenExpression.atTokens[j].eType = eTokenType.GROUP_END AND_THEN typTokenExpression.atTokens[j].uiGroupNumber = tempFoundGroups[i].uiGroupNumber THEN
+                // We've reached the end of our group, stop taking tokens away, add a hint for later about skipping tokens, and exit this loop
+                tempEndTokenIndex := j;
+                EXIT;
+            ELSIF typTokenExpression.atTokens[j].eType = eTokenType.GROUP_START AND_THEN typTokenExpression.atTokens[j].uiGroupNumber = tempFoundGroups[i].uiGroupNumber THEN
+                // Ignore group starts of ourself (we dont need those tokens)
+                CONTINUE;
+            END_IF
+            
+            IF typTokenExpression.atTokens[j].eType = eTokenType.FUNCTION_CALL_END AND_THEN typTokenExpression.atTokens[j].uiGroupNumber = tempFoundGroups[i].uiGroupNumber THEN
+                // We've reached the end of our group, stop taking tokens away, add a hint for later about skipping tokens, and exit this loop
+                tempEndTokenIndex := j;
+                EXIT;
+            END_IF
+            
+            tempFoundGroupsTokens[tempCountFoundGroupsTokens] := typTokenExpression.atTokens[j];
+            tempCountFoundGroupsTokens := tempCountFoundGroupsTokens + 1;
+        END_FOR
+        
+        typSteps.atSteps[typSteps.uiCountSteps].atTokens := tempFoundGroupsTokens;
+        typSteps.atSteps[typSteps.uiCountSteps].uiCountTokens := tempCountFoundGroupsTokens;
+        typSteps.atSteps[typSteps.uiCountSteps].uiInternalVariableTarget := i + 1;
+        
+        IF i >= ParameterList.uiMaxInternalVars THEN
+            FuStepizeExpression := FALSE;
+            RETURN;
+        END_IF
+        
+        // Replace all tokens with invalid tokens, if necessary, the first token will be replaced with INTERNAL_VAR
+        FOR j := tempFoundGroups[i].uiTokenIndex TO tempEndTokenIndex BY 1 DO
+            typTokenExpression.atTokens[j] := INVALID_TOKEN;
+        END_FOR
+        
+        IF tempFoundGroups[i].uiTokenIndex = 0 AND_THEN tempEndTokenIndex = (typTokenExpression.uiCountTokens - 1) THEN
+            ;// Do not generate internal var token, because all tokens are covered
+        ELSE
+            // Rewrite tokens and replace them with one INTERNAL_VAR and INVALID tokens
+            typTokenExpression.atTokens[tempFoundGroups[i].uiTokenIndex] := INVALID_TOKEN;
+            typTokenExpression.atTokens[tempFoundGroups[i].uiTokenIndex].eType := eTokenType.INTERNAL_VAR;
+            typTokenExpression.atTokens[tempFoundGroups[i].uiTokenIndex].lrValue := TO_LREAL((i + 1));
+        END_IF
+        
+        typSteps.uiCountSteps := typSteps.uiCountSteps + 1;
+    END_FOR
+END_IF
+
+// Step 4: Rewrite the tokens, skip INVALID tokens
+FOR i := 0 TO (typTokenExpression.uiCountTokens - 1) BY 1 DO
+    IF typTokenExpression.atTokens[i].eType = eTokenType.INVALID THEN
+        CONTINUE;
+    END_IF
+    
+    j := typSteps.atSteps[typSteps.uiCountSteps].uiCountTokens;
+    
+    typSteps.atSteps[typSteps.uiCountSteps].atTokens[j] := typTokenExpression.atTokens[i];
+    typSteps.atSteps[typSteps.uiCountSteps].uiCountTokens := j + 1;
+END_FOR
+
+IF typSteps.atSteps[typSteps.uiCountSteps].uiCountTokens > 0 THEN
+    typSteps.uiCountSteps := typSteps.uiCountSteps + 1;
+END_IF
+
+// Step 5: Profit, each step should now contain a particular operation set
+// Note: Operations as "1 + 5 + 6" are handled inline in the evaluator, since the result of the previous op "1 + 5" can be used as "$result + 5"
+FuStepizeExpression := TRUE;

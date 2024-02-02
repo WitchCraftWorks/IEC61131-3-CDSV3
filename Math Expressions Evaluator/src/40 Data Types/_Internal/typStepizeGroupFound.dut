@@ -1,0 +1,8 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typStepizeGroupFound :
+STRUCT
+    uiTokenIndex: UINT;
+    uiGroupNumber: UINT;
+    xExpandMore: BOOL;
+END_STRUCT
+END_TYPE

@@ -1,0 +1,33 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Evaluates token types that are considered "single".
+// This includes: numbers, variables, internal variables.
+// The return value will indicate a successful evaluation.
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuEvaluateTokenSingle : BOOL
+VAR_INPUT
+    typToken: typExpressionToken;
+    uiCursor: UINT;                  // Only for error message
+END_VAR
+VAR_IN_OUT
+    alrVariables: ARRAY [*] OF LREAL;
+    alrInternalVariables: ARRAY [*] OF LREAL;
+END_VAR
+VAR_OUTPUT
+    lrResult: LREAL;
+    sError: STRING;
+END_VAR
+{library PRIVATE}
+VAR
+    tempVariableNr: UINT;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+CASE typToken.eType OF
+    eTokenType.NUMBER:
+        FuEvaluateTokenSingle := TRUE;
+        lrResult := typToken.lrValue;
+    
+    eTokenType.VARIABLE, eTokenType.INTERNAL_VAR:
+        FuEvaluateTokenSingle := FuEvaluateVariable(typToken, uiCursor, alrVariables, alrInternalVariables, lrResult => lrResult, sError => sError);
+ELSE
+    sError := Standard.CONCAT('Invalid single token at position ', TO_STRING(uiCursor));
+END_CASE

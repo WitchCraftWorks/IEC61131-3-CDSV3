@@ -1,0 +1,24 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Converts an ANSI/ISO 8859-1 compiled pattern to an Unicode compiled pattern.
+// ANSI/ISO 8859-1 compiled patterns can be converted to Unicode without any loss.
+FUNCTION FuCompiledPatternAnsiToW : typCompiledPatternW
+VAR_INPUT
+    typPattern: typCompiledPattern;
+END_VAR
+{library PRIVATE}
+VAR
+    i: UDINT;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF typPattern.uiCountTokens = 0 THEN
+    RETURN;
+END_IF
+
+FuCompiledPatternAnsiToW.xCaseInsensitive := typPattern.xCaseInsensitive;
+FuCompiledPatternAnsiToW.uiCountTokens := typPattern.uiCountTokens;
+
+FOR i := 0 TO TO_UDINT((typPattern.uiCountTokens - 1)) BY 1 DO
+    FuCompiledPatternAnsiToW.atTokens[i].eType := typPattern.atTokens[i].eType;
+    FuCompiledPatternAnsiToW.atTokens[i].dwChar := TO_DWORD(typPattern.atTokens[i].bChar);
+    FuCompiledPatternAnsiToW.atTokens[i].dwAlternativeChar := TO_DWORD(typPattern.atTokens[i].bAlternativeChar); 
+END_FOR

@@ -1,0 +1,94 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Evaluates an operation expression.
+// For example "5 + 2", but not "5 + 2 + 1".
+// The return value will indicate a successful evaluation.
+{attribute 'qualified_only'}
+FUNCTION FuEvaluateOperation : BOOL
+VAR_INPUT
+    uiMaxCursor: UINT;
+END_VAR
+VAR_IN_OUT
+    atTokens: ARRAY [*] OF typExpressionToken;
+    uiCursor: UINT;
+    
+    alrVariables: ARRAY [*] OF LREAL;
+    alrInternalVariables: ARRAY [*] OF LREAL;
+END_VAR
+VAR_OUTPUT
+    lrResult: LREAL;
+    sError: STRING;
+END_VAR
+{library PRIVATE}
+VAR
+    tempLowerBound: UINT;
+    tempUpperBound: UINT;
+    
+    tempToken1: typExpressionToken;
+    tempToken2: typExpressionToken;
+    tempToken3: typExpressionToken;
+    
+    tempVariableNr: UINT;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+tempLowerBound := TO_UINT(LOWER_BOUND(atTokens, 1));
+tempUpperBound := MIN(uiMaxCursor, TO_UINT(UPPER_BOUND(atTokens, 1)));
+
+tempToken1 := atTokens[uiCursor];
+
+CASE tempToken1.eType OF
+    eTokenType.INVALID, eTokenType.MATH_OP, eTokenType.GROUP_START, eTokenType.GROUP_END, eTokenType.FUNCTION_CALL_END:
+        sError := Standard.CONCAT('Invalid token at position ', TO_STRING(uiCursor));
+        RETURN;
+    
+    eTokenType.FUNCTION_CALL:
+        FuEvaluateOperation := FuEvaluateFunctionCall(
+            tempToken1,
+            tempUpperBound,
+            atTokens,
+            uiCursor,
+            alrVariables,
+            alrInternalVariables,
+            lrResult => lrResult,
+            sError => sError
+        );
+        RETURN;
+END_CASE
+
+// If we're past the maximum position/cursor, evaluate the token (it should be a variable or number)
+IF uiCursor = uiMaxCursor AND_THEN FuEvaluateTokenSingle(tempToken1, uiCursor, alrVariables, alrInternalVariables, lrResult => lrResult, sError => sError) THEN
+    RETURN;
+END_IF
+
+uiCursor := uiCursor + 1;
+
+// The first token wasn't a variable or number and we're out of bounds, error out
+IF uiCursor > tempUpperBound THEN
+    sError := 'Array upper bounds violation (not enough tokens)';
+    RETURN;
+END_IF
+
+tempToken2 := atTokens[uiCursor];
+
+CASE tempToken2.eType OF
+    eTokenType.MATH_OP:
+        uiCursor := uiCursor + 1;
+        IF uiCursor > tempUpperBound THEN
+            sError := 'Array upper bounds violation (not enough tokens)';
+            RETURN;
+        END_IF
+        
+        FuEvaluateOperation := FuEvaluateMathOp(
+            tempToken2,
+            tempToken1,
+            atTokens[uiCursor],
+            uiCursor,
+            alrVariables,
+            alrInternalVariables,
+            lrResult => lrResult,
+            sError => sError
+        );
+        RETURN;
+ELSE
+    sError := Standard.CONCAT('Invalid token at position ', TO_STRING(uiCursor));
+    RETURN;
+END_CASE

@@ -1,0 +1,8 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typPatternToken :
+STRUCT
+    eType: eTokenType;
+    bChar: BYTE;
+    bAlternativeChar: BYTE;
+END_STRUCT
+END_TYPE

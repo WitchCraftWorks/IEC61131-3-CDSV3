@@ -1,0 +1,169 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Matches the given compiled pattern against the subject.
+// This is the UTF-8 version of FuMatchExpression.
+// Disabling strict conformity allows the usage of the extended ASCII alphabet (ISO 8859-1, decimal 160-255),
+// as long as it doesn't form a valid UTF-8 byte sequence.
+{attribute 'qualified_only'}
+FUNCTION FuMatchExpressionUTF8 : BOOL
+VAR_INPUT
+    typPattern: typCompiledPatternW;      // The compiled pattern from "FuCompilePatternW"
+    psSubject: POINTER TO STRING(1);      // A pointer to the subject string - for technical reasons this is a STRING(1), although any size is supported
+    udiLength: UDINT;                     // The length of the subject string (in bytes, not codepoints)
+    xStrictConformity: BOOL := TRUE;      // Require strict conformity to the Unicode standard
+END_VAR
+{library PRIVATE}
+VAR
+    tempPtrStr: POINTER TO BYTE;
+    tempPtrStrMatching: POINTER TO BYTE;
+    tempStrIndex: UDINT;
+    tempStrIndexMatching: UDINT;
+    
+    i: UINT;
+    j: UINT;
+    k: LINT;
+    
+    tempChar: DWORD;
+    tempCharLength: USINT;
+    
+    tempNextChar: DWORD;
+    tempNextCharLength: DWORD;
+    
+    tempLaziness: BOOL;
+    tempHasEndChar: BOOL;
+    tempEndChar: DWORD;
+    tempEndChar2: DWORD;
+    
+    tempWildcardSearchStart: LINT;
+    tempWildcardSearchEnd: LINT;
+    tempWildcardSearchBy: LINT;
+    tempWildcardSearchOffset: UDINT;
+    tempWildcardSearchSuccess: BOOL;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+FuMatchExpressionUTF8 := FALSE;
+
+IF typPattern.uiCountTokens = 0 OR_ELSE udiLength = 0 THEN
+    RETURN;
+END_IF
+
+tempPtrStr := psSubject;
+tempStrIndex := 0;
+
+WHILE i < typPattern.uiCountTokens DO
+    IF tempStrIndex >= udiLength THEN
+        // Only if all following tokens are of type WILDCARD, we can allow a match to be positive
+        FOR j := i TO (typPattern.uiCountTokens - 1) BY 1 DO
+            IF typPattern.atTokens[j].eType <> eTokenType.WILDCARD THEN
+                FuMatchExpressionUTF8 := FALSE;
+                RETURN;
+            END_IF
+        END_FOR
+        
+        FuMatchExpressionUTF8 := TRUE;
+        RETURN;
+    END_IF
+    
+    IF
+        NOT FuUtf8CharToDword(
+            psInput := (tempPtrStr + tempStrIndex),
+            udiStringLength := (udiLength - tempStrIndex),
+            xStrictConformity := xStrictConformity,
+            dwCodepoint => tempChar,
+            usiByteLength => tempCharLength
+        )
+    THEN
+        RETURN;
+    END_IF
+    
+    CASE typPattern.atTokens[i].eType OF
+        eTokenType.INVALID: // We shouldn't ever get an invalid token inside our token array that isn't behind our count
+            RETURN;
+        
+        eTokenType.LITERAL:
+            IF
+                tempChar <> typPattern.atTokens[i].dwChar AND_THEN
+                (
+                    NOT typPattern.xCaseInsensitive OR_ELSE
+                    typPattern.atTokens[i].dwAlternativeChar = 0 OR_ELSE
+                    tempChar <> typPattern.atTokens[i].dwAlternativeChar
+                ) 
+            THEN
+                RETURN;
+            END_IF
+            
+            tempStrIndex := tempStrIndex + tempCharLength;
+        
+        eTokenType.ANYCHAR:
+            tempStrIndex := tempStrIndex + tempCharLength;
+        
+        eTokenType.WILDCARD:
+            tempLaziness := (typPattern.atTokens[i].dwChar = 1);
+            tempHasEndChar := FALSE;
+            
+            FOR j := i + 1 TO (typPattern.uiCountTokens - 1) BY 1 DO
+                IF typPattern.atTokens[j].eType = eTokenType.LITERAL THEN
+                    tempHasEndChar := TRUE;
+                    tempEndChar := typPattern.atTokens[j].dwChar;
+                    tempEndChar2 := typPattern.atTokens[j].dwAlternativeChar;
+                    EXIT;
+                END_IF
+            END_FOR
+            
+            // If we don't have any characters to match on at the end of the pattern, we match immediately
+            IF NOT tempHasEndChar THEN
+                FuMatchExpressionUTF8 := TRUE;
+                RETURN;
+            END_IF
+            
+            IF tempLaziness THEN
+                // Advance token pointer once more because the next token is the laziness token we already used
+                i := i + 1;
+                
+                // If the wildcard is lazy, search from front to back
+                tempWildcardSearchStart := TO_LINT(tempStrIndex);
+                tempWildcardSearchEnd := TO_LINT(udiLength);
+                tempWildcardSearchBy := 1;
+            ELSE
+                // If the wildcard is NOT lazy, search from back to front (greedy!)
+                tempWildcardSearchStart := TO_LINT(udiLength);
+                tempWildcardSearchEnd := TO_LINT(tempStrIndex);
+                tempWildcardSearchBy := -1;
+            END_IF
+            
+            tempWildcardSearchSuccess := FALSE;
+            tempWildcardSearchOffset := 0;
+            
+            FOR k := tempWildcardSearchStart TO tempWildcardSearchEnd BY tempWildcardSearchBy DO
+                IF
+                    FuUtf8CharToDword(
+                        psInput := (tempPtrStr + LINT_TO___XWORD(k)),
+                        udiStringLength := (udiLength - tempWildcardSearchOffset),
+                        xStrictConformity := xStrictConformity,
+                        dwCodepoint => tempNextChar,
+                        usiByteLength => tempNextCharLength
+                    )
+                THEN
+                    tempWildcardSearchOffset := tempWildcardSearchOffset + tempNextCharLength;
+                    
+                    IF
+                        tempNextChar = tempEndChar OR_ELSE
+                        (typPattern.xCaseInsensitive AND_THEN tempEndChar2 <> 0 AND_THEN tempNextChar = tempEndChar2)
+                    THEN
+                        tempWildcardSearchSuccess := TRUE;
+                        tempStrIndex := TO_UDINT(k);
+                        EXIT;
+                    END_IF
+                ELSE
+                    tempWildcardSearchOffset := tempWildcardSearchOffset + 1;
+                END_IF
+            END_FOR
+            
+            IF NOT tempWildcardSearchSuccess THEN
+                RETURN;
+            END_IF
+    END_CASE
+    
+    i := i + 1;
+END_WHILE
+
+FuMatchExpressionUTF8 := (tempStrIndex >= udiLength);

@@ -1,0 +1,48 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Evaluates a single step.
+// For multiple token "expressions" (i.e. "5 + 2 + 1"),
+// the term will be evaluated left to right (in token order).
+// The return value will indicate a successful expression evaluation.
+{attribute 'qualified_only'}
+FUNCTION FuEvaluateStep : BOOL
+VAR_INPUT
+    typStep: typExpressionStep;
+END_VAR
+VAR_OUTPUT
+    lrResult: LREAL;
+    sError: STRING;
+END_VAR
+VAR_IN_OUT
+    alrVariables: ARRAY [*] OF LREAL;
+    alrInternalVariables: ARRAY [*] OF LREAL;
+END_VAR
+{library PRIVATE}
+VAR
+    i: UINT;
+    tempMaxCursor: UINT;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF typStep.uiCountTokens = 0 THEN
+    FuEvaluateStep := TRUE;
+    RETURN;
+END_IF
+
+lrResult := 0.0;
+sError := '';
+
+tempMaxCursor := typStep.uiCountTokens - 1;
+FOR i := 0 TO tempMaxCursor BY 1 DO
+    // For operations like "5 + 3 + 1", we need for the second step "+ 1"
+    // to insert the previous result of "5 + 3", so we rewind one and overwrite it
+    IF i > 0 AND_THEN typStep.atTokens[i].eType = eTokenType.MATH_OP THEN
+        i := i - 1;
+        typStep.atTokens[i].eType := eTokenType.NUMBER;
+        typStep.atTokens[i].lrValue := lrResult;
+    END_IF
+    
+    IF NOT FuEvaluateOperation(tempMaxCursor, typStep.atTokens, i, alrVariables, alrInternalVariables, lrResult => lrResult, sError => sError) THEN
+        RETURN;
+    END_IF
+END_FOR
+
+FuEvaluateStep := TRUE;

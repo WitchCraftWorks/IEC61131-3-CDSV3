@@ -1,0 +1,8 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typPatternTokenW :
+STRUCT
+    eType: eTokenType;
+    dwChar: DWORD;
+    dwAlternativeChar: DWORD;
+END_STRUCT
+END_TYPE

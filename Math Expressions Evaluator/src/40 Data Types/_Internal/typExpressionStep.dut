@@ -1,0 +1,8 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typExpressionStep :
+STRUCT
+    atTokens: ARRAY [0..ParameterList.uiMaxExpressionTokens] OF typExpressionToken;
+    uiCountTokens: UINT;
+    uiInternalVariableTarget: UINT;
+END_STRUCT
+END_TYPE

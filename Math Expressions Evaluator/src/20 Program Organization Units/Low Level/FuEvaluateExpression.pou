@@ -1,0 +1,47 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Evaluates the expression.
+// All expressions use LREAL as data type for operations, which is also the result output.
+//
+// The following math operation behaviour applies:
+//  - In general: If any of the operands is a special value (+Inf, -Inf, NaN), then an error is returned
+//  - For Division (/): Division by zero yields depending on ParameterList.eDivisionByZero into an error or not
+//  - For Modulo (%): Both operands are converted to LINT and the result is converted back to LREAL
+//
+// The return value will indicate a successful evaluation.
+{attribute 'qualified_only'}
+FUNCTION FuEvaluateExpression : BOOL
+VAR_INPUT
+    typExpressionSteps: typExpressionOperationSteps;   // The expression providing steps for complex terms
+    alrVariables: ARRAY [*] OF LREAL;                  // Variables to use
+END_VAR
+VAR_OUTPUT
+    lrResult: LREAL;                                   // Result output
+    sError: STRING;                                    // Error message (may also contain nonsense if function returns TRUE)
+END_VAR
+{library PRIVATE}
+VAR
+    i: UINT;
+    
+    tempInternalVariables: ARRAY [1..ParameterList.uiMaxInternalVars] OF LREAL;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF typExpressionSteps.uiCountSteps = 0 THEN
+    FuEvaluateExpression := TRUE;
+    RETURN;
+END_IF
+
+FOR i := 0 TO (typExpressionSteps.uiCountSteps - 1) BY 1 DO
+    IF NOT FuEvaluateStep(typExpressionSteps.atSteps[i],  alrVariables, tempInternalVariables, lrResult => lrResult, sError => sError) THEN
+        RETURN;
+    END_IF
+    
+    IF
+        typExpressionSteps.atSteps[i].uiInternalVariableTarget > 0 AND_THEN
+        typExpressionSteps.atSteps[i].uiInternalVariableTarget >= 1 AND_THEN
+        typExpressionSteps.atSteps[i].uiInternalVariableTarget <= ParameterList.uiMaxInternalVars
+    THEN
+        tempInternalVariables[typExpressionSteps.atSteps[i].uiInternalVariableTarget] := lrResult;
+    END_IF
+END_FOR
+
+FuEvaluateExpression := TRUE;

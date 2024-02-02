@@ -1,0 +1,3028 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 5" creationDateTime="2024-02-02T21:42:38.0162335" />
+  <contentHeader name="Math Expression Evaluator" version="0.1.0.0" modificationDateTime="2024-02-02T18:51:06.5825805" organization="GG">
+    <Comment>The Math Expression Evaluator evaluates math expressions (terms).
+
+See the documentation folder for an introduction (the folder itself).</Comment>
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation>
+          <property name="Author" type="string" />
+          <property name="AutoResolveUnbound" type="boolean">true</property>
+          <property name="Company" type="string">GG</property>
+          <property name="DefaultNamespace" type="string">MEE</property>
+          <property name="Description" type="string">The Math Expression Evaluator evaluates math expressions (terms).
+
+See the documentation folder for an introduction (the folder itself).</property>
+          <property name="DocFormat" type="string">reStructuredText</property>
+          <property name="IsEndUserLibrary" type="boolean">false</property>
+          <property name="LanguageModelAttribute" type="string">qualified-access-only</property>
+          <property name="Placeholder" type="string">MEE</property>
+          <property name="PreserveCompiledLibComments" type="boolean">true</property>
+          <property name="Project" type="string">MathExpressionEvaluator_v0.1.0.0</property>
+          <property name="Released" type="boolean">false</property>
+          <property name="SourceLibrary" type="boolean">false</property>
+          <property name="Title" type="string">Math Expression Evaluator</property>
+          <property name="Version" type="version">0.1.0.0</property>
+          <property name="library-category-list" type="library-category-list" />
+        </ProjectInformation>
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes>
+      <dataType name="typExpressionStep">
+        <baseType>
+          <struct>
+            <variable name="atTokens">
+              <type>
+                <array>
+                  <dimension lower="0" upper="ParameterList.uiMaxExpressionTokens" />
+                  <baseType>
+                    <derived name="typExpressionToken" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="uiCountTokens">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="uiInternalVariableTarget">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>aeda433c-072d-4816-ad84-5eafb65c67a1</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="typExpressionToken">
+        <baseType>
+          <struct>
+            <variable name="eType">
+              <type>
+                <derived name="eTokenType" />
+              </type>
+            </variable>
+            <variable name="uiGroupNumber">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="sIdentifier">
+              <type>
+                <string length="5" />
+              </type>
+            </variable>
+            <variable name="uiArgsCount">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="xArgsVariable">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="lrValue">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>910a66ef-8578-411c-a123-9c6a071b9d29</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="typStepizeGroupFound">
+        <baseType>
+          <struct>
+            <variable name="uiTokenIndex">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="uiGroupNumber">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="xExpandMore">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>45147783-8653-42ff-b64b-bf08797a7c86</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="typStepizeRewriteTokenSkips">
+        <baseType>
+          <struct>
+            <variable name="uiStart">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="uiEnd">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="uiVarNum">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e83ceda4-74a6-4b93-95d8-034f5b41a3f8</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="eDivisionByZeroHandling">
+        <baseType>
+          <enum>
+            <values>
+              <value name="ERROR" value="0" />
+              <value name="RESULT_IS_ZERO" />
+              <value name="DIVISOR_IS_ONE" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+              <Attribute Name="strict" Value="" />
+            </Attributes>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>f5bccc7f-0102-433c-b6ec-33ac33a84fd0</ObjectId>
+          </data>
+        </addData>
+        <documentation>
+          <xhtml xmlns="http://www.w3.org/1999/xhtml"> A division by zero is not allowed and this ENUM describes how such a situation is handled.
+  - ERROR: An error is returned
+  - RESULT_IS_ZERO: The result is simply set to 0.0 and no error is returned
+  - DIVISOR_IS_ONE: The divisor is set to 1.0 instead and the operation is being carried out</xhtml>
+        </documentation>
+      </dataType>
+      <dataType name="eTokenType">
+        <baseType>
+          <enum>
+            <values>
+              <value name="INVALID" value="0" />
+              <value name="NUMBER" />
+              <value name="VARIABLE" />
+              <value name="GROUP_START" />
+              <value name="GROUP_END" />
+              <value name="MATH_OP" />
+              <value name="FUNCTION_CALL" />
+              <value name="FUNCTION_CALL_END" />
+              <value name="INTERNAL_VAR" value="99" />
+            </values>
+          </enum>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+              <Attribute Name="strict" Value="" />
+            </Attributes>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>fe87216d-5275-4488-a7eb-0af1fec86796</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="typExpressionOperationSteps">
+        <baseType>
+          <struct>
+            <variable name="atSteps">
+              <type>
+                <array>
+                  <dimension lower="0" upper="ParameterList.uiMaxStepsPerOperation" />
+                  <baseType>
+                    <derived name="typExpressionStep" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="uiCountSteps">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>6ad2c6c6-cf20-4664-abdc-bc2e8aeebd73</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+      <dataType name="typTokenizedExpression">
+        <baseType>
+          <struct>
+            <variable name="atTokens">
+              <type>
+                <array>
+                  <dimension lower="0" upper="ParameterList.uiMaxExpressionTokens" />
+                  <baseType>
+                    <derived name="typExpressionToken" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="uiCountTokens">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </struct>
+        </baseType>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>770f45c7-4e30-4154-86a0-b061c330b05d</ObjectId>
+          </data>
+        </addData>
+      </dataType>
+    </dataTypes>
+    <pous>
+      <pou name="FuEvaluateFunctionCall" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="typFunctionToken">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="uiMaxCursor">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="atTokens">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="typExpressionToken" />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF typExpressionToken" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <inOutVars>
+            <variable name="uiCursor">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="alrVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+            <variable name="alrInternalVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="lrResult">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="i">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="j">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempArgs">
+              <type>
+                <array>
+                  <dimension lower="0" upper="8" />
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="tempHelperValue">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="CONST_PI">
+              <type>
+                <LREAL />
+              </type>
+              <initialValue>
+                <simpleValue value="3.14159265359" />
+              </initialValue>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/accessmodifiers" handleUnknown="implementation">
+              <AccessModifiers Internal="true" />
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Evaluates a function call.
+ First all necessary arguments are resolved to LREAL and then the function gets executed.
+ The return value will indicate a successful evaluation.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF typFunctionToken.eType &lt;&gt; eTokenType.FUNCTION_CALL THEN
+    sError := Standard.CONCAT('Invalid function call token at ', TO_STRING(uiCursor));
+    RETURN;
+END_IF
+
+IF uiCursor + typFunctionToken.uiArgsCount &gt; uiMaxCursor THEN
+    sError := Standard.CONCAT('Not enough arguments for function call at ', TO_STRING(uiCursor));
+    RETURN;
+END_IF
+
+FOR i := 0 TO (typFunctionToken.uiArgsCount - 1) BY 1 DO
+    j := uiCursor + i + 1;
+    
+    IF NOT FuEvaluateTokenSingle(atTokens[j], j, alrVariables, alrInternalVariables, lrResult =&gt; tempArgs[i], sError =&gt; sError) THEN
+        RETURN;
+    END_IF
+END_FOR
+
+uiCursor := uiCursor + typFunctionToken.uiArgsCount;
+
+IF typFunctionToken.sIdentifier = Constants.FUN_ABS THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := ABS(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_ACOS THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := ACOS(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_ASIN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := ASIN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_ATAN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := ATAN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_CEIL THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := FPU.Ceil(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_COS THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := COS(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_DEG THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := tempArgs[0] * 180 / CONST_PI;
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_FLOOR THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := FPU.Floor(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_LOG THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := LOG(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_LN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := LN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_RAD THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := tempArgs[0] * CONST_PI / 180;
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_ROUND THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    IF (tempArgs[0] - FPU.Truncate(tempArgs[0])) &gt;= 0.5 THEN
+        lrResult := FPU.Ceil(tempArgs[0]);
+    ELSE
+        lrResult := FPU.Floor(tempArgs[0]);
+    END_IF
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_SIN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := SIN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_SQRT THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := SQRT(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_TAN THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := TAN(tempArgs[0]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_TRUNC THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    tempHelperValue := EXPT(10, tempArgs[1]);
+    lrResult := FPU.Truncate((tempArgs[0] * tempHelperValue)) / tempHelperValue;
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_LIMIT THEN
+    FuEvaluateFunctionCall := TRUE;
+    lrResult := LIMIT(tempArgs[0], tempArgs[1], tempArgs[2]);
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_AVGA THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    tempHelperValue := 0.0;
+    FOR i := 0 TO (typFunctionToken.uiArgsCount - 1) BY 1 DO
+        tempHelperValue := tempHelperValue + tempArgs[i];
+    END_FOR
+    
+    lrResult := tempHelperValue / typFunctionToken.uiArgsCount;
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_MAX THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    lrResult := -1.7976931348623157E+308;
+    FOR i := 0 TO (typFunctionToken.uiArgsCount - 1) BY 1 DO
+        IF tempArgs[i] &gt; lrResult THEN
+            lrResult := tempArgs[i];
+        END_IF
+    END_FOR
+ELSIF typFunctionToken.sIdentifier = Constants.FUN_MIN THEN
+    FuEvaluateFunctionCall := TRUE;
+    
+    lrResult := 1.7976931348623157E+308;
+    FOR i := 0 TO (typFunctionToken.uiArgsCount - 1) BY 1 DO
+        IF tempArgs[i] &lt; lrResult THEN
+            lrResult := tempArgs[i];
+        END_IF
+    END_FOR
+ELSE
+    sError := Standard.CONCAT('Function not implemented: ', typFunctionToken.sIdentifier);
+END_IF
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>10338df6-f0d0-4bc6-b251-9bf725ce2690</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuEvaluateMathOp" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="typOp">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="typToken1">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="typToken2">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="uiCursor">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Only for error message</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alrVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+            <variable name="alrInternalVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="lrResult">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="tempOperatorByte">
+              <type>
+                <BYTE />
+              </type>
+            </variable>
+            <variable name="tempNumber1">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="tempNumber2">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/accessmodifiers" handleUnknown="implementation">
+              <AccessModifiers Internal="true" />
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Evaluates a math operation.
+ First both tokens are resolved to LREAL values and then the selected operation takes place.
+ In general, if any of the operands is a special LREAL value, then an error is returned.
+ For Division (/), division by zero yields into an error (depends on ParameterList setting).
+ For MODULO (%), both tokens are converted to LINT and the result is converted back to LREAL.
+ The return value will indicate a successful evaluation.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF typOp.eType &lt;&gt; eTokenType.MATH_OP THEN
+    sError := Standard.CONCAT('Invalid math operation token at ', TO_STRING(uiCursor));
+    RETURN;
+END_IF
+
+// Change STRING identifier to BYTE (to match on FuTokenizeExpression strings)
+tempOperatorByte := typOp.sIdentifier[0];
+
+// Resolve first token to LREAL
+IF NOT FuEvaluateTokenSingle(typToken1, uiCursor, alrVariables, alrInternalVariables, lrResult =&gt; tempNumber1, sError =&gt; sError) THEN
+    FuEvaluateMathOp := FALSE;
+    RETURN;
+END_IF
+
+// Resolve second token to LREAL
+IF NOT FuEvaluateTokenSingle(typToken2, uiCursor, alrVariables, alrInternalVariables, lrResult =&gt; tempNumber2, sError =&gt; sError) THEN
+    FuEvaluateMathOp := FALSE;
+    RETURN;
+END_IF
+
+IF NOT FPU.IsLRealNumber(tempNumber1) THEN
+    FuEvaluateMathOp := FALSE;
+    sError := Standard.CONCAT('Special LREAL value is not valid: ', TO_STRING(tempNumber1));
+    RETURN;
+ELSIF NOT FPU.IsLRealNumber(tempNumber2) THEN
+    FuEvaluateMathOp := FALSE;
+    sError := Standard.CONCAT('Special LREAL value is not valid: ', TO_STRING(tempNumber2));
+    RETURN;
+END_IF
+
+IF tempOperatorByte = Constants.CHAR_ADD THEN
+    lrResult := tempNumber1 + tempNumber2;
+ELSIF tempOperatorByte = Constants.CHAR_SUB THEN
+    lrResult := tempNumber1 - tempNumber2;
+ELSIF tempOperatorByte = Constants.CHAR_MUL THEN
+    lrResult := tempNumber1 * tempNumber2;
+ELSIF tempOperatorByte = Constants.CHAR_DIV THEN
+    IF tempNumber2 = 0.0 THEN
+        CASE ParameterList.eDivisionByZero OF
+            eDivisionByZeroHandling.RESULT_IS_ZERO:
+                FuEvaluateMathOp := TRUE;
+                lrResult := 0.0;
+                RETURN;
+            
+            eDivisionByZeroHandling.DIVISOR_IS_ONE:
+                tempNumber2 := 1.0;
+        ELSE
+            sError := 'Division by zero is not allowed';
+            RETURN;
+        END_CASE
+    END_IF
+    
+    lrResult := tempNumber1 / tempNumber2;
+ELSIF tempOperatorByte = Constants.CHAR_MUL THEN
+    lrResult := EXPT(tempNumber1, tempNumber2);
+ELSIF tempOperatorByte = Constants.CHAR_MOD THEN
+    lrResult := LINT_TO_LREAL((LREAL_TO_LINT(tempNumber1) MOD LREAL_TO_LINT(tempNumber2)));
+ELSE
+    sError := Standard.CONCAT('Not a variable token at position ', TO_STRING(uiCursor));
+    RETURN;
+END_IF
+
+FuEvaluateMathOp := TRUE;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>3b74bf5e-3b1b-40c6-b22f-636b63e6a5e3</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuEvaluateOperation" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="uiMaxCursor">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="atTokens">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="typExpressionToken" />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF typExpressionToken" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <inOutVars>
+            <variable name="uiCursor">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="alrVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+            <variable name="alrInternalVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="lrResult">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="tempLowerBound">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempUpperBound">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempToken1">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="tempToken2">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="tempToken3">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="tempVariableNr">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Evaluates an operation expression.
+ For example "5 + 2", but not "5 + 2 + 1".
+ The return value will indicate a successful evaluation.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">tempLowerBound := TO_UINT(LOWER_BOUND(atTokens, 1));
+tempUpperBound := MIN(uiMaxCursor, TO_UINT(UPPER_BOUND(atTokens, 1)));
+
+tempToken1 := atTokens[uiCursor];
+
+CASE tempToken1.eType OF
+    eTokenType.INVALID, eTokenType.MATH_OP, eTokenType.GROUP_START, eTokenType.GROUP_END, eTokenType.FUNCTION_CALL_END:
+        sError := Standard.CONCAT('Invalid token at position ', TO_STRING(uiCursor));
+        RETURN;
+    
+    eTokenType.FUNCTION_CALL:
+        FuEvaluateOperation := FuEvaluateFunctionCall(
+            tempToken1,
+            tempUpperBound,
+            atTokens,
+            uiCursor,
+            alrVariables,
+            alrInternalVariables,
+            lrResult =&gt; lrResult,
+            sError =&gt; sError
+        );
+        RETURN;
+END_CASE
+
+// If we're past the maximum position/cursor, evaluate the token (it should be a variable or number)
+IF uiCursor = uiMaxCursor AND_THEN FuEvaluateTokenSingle(tempToken1, uiCursor, alrVariables, alrInternalVariables, lrResult =&gt; lrResult, sError =&gt; sError) THEN
+    RETURN;
+END_IF
+
+uiCursor := uiCursor + 1;
+
+// The first token wasn't a variable or number and we're out of bounds, error out
+IF uiCursor &gt; tempUpperBound THEN
+    sError := 'Array upper bounds violation (not enough tokens)';
+    RETURN;
+END_IF
+
+tempToken2 := atTokens[uiCursor];
+
+CASE tempToken2.eType OF
+    eTokenType.MATH_OP:
+        uiCursor := uiCursor + 1;
+        IF uiCursor &gt; tempUpperBound THEN
+            sError := 'Array upper bounds violation (not enough tokens)';
+            RETURN;
+        END_IF
+        
+        FuEvaluateOperation := FuEvaluateMathOp(
+            tempToken2,
+            tempToken1,
+            atTokens[uiCursor],
+            uiCursor,
+            alrVariables,
+            alrInternalVariables,
+            lrResult =&gt; lrResult,
+            sError =&gt; sError
+        );
+        RETURN;
+ELSE
+    sError := Standard.CONCAT('Invalid token at position ', TO_STRING(uiCursor));
+    RETURN;
+END_CASE
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>2caa2716-9539-4e6e-a617-5a8e3e9c955e</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuEvaluateStep" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="typStep">
+              <type>
+                <derived name="typExpressionStep" />
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="lrResult">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </outputVars>
+          <inputVars>
+            <variable name="alrVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+            <variable name="alrInternalVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="i">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempMaxCursor">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Evaluates a single step.
+ For multiple token "expressions" (i.e. "5 + 2 + 1"),
+ the term will be evaluated left to right (in token order).
+ The return value will indicate a successful expression evaluation.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF typStep.uiCountTokens = 0 THEN
+    FuEvaluateStep := TRUE;
+    RETURN;
+END_IF
+
+lrResult := 0.0;
+sError := '';
+
+tempMaxCursor := typStep.uiCountTokens - 1;
+FOR i := 0 TO tempMaxCursor BY 1 DO
+    // For operations like "5 + 3 + 1", we need for the second step "+ 1"
+    // to insert the previous result of "5 + 3", so we rewind one and overwrite it
+    IF i &gt; 0 AND_THEN typStep.atTokens[i].eType = eTokenType.MATH_OP THEN
+        i := i - 1;
+        typStep.atTokens[i].eType := eTokenType.NUMBER;
+        typStep.atTokens[i].lrValue := lrResult;
+    END_IF
+    
+    IF NOT FuEvaluateOperation(tempMaxCursor, typStep.atTokens, i, alrVariables, alrInternalVariables, lrResult =&gt; lrResult, sError =&gt; sError) THEN
+        RETURN;
+    END_IF
+END_FOR
+
+FuEvaluateStep := TRUE;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>a2d11e64-8168-4dfe-81ce-fa6ddd505989</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuEvaluateTokenSingle" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="typToken">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="uiCursor">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Only for error message</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alrVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+            <variable name="alrInternalVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="lrResult">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="tempVariableNr">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/accessmodifiers" handleUnknown="implementation">
+              <AccessModifiers Internal="true" />
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Evaluates token types that are considered "single".
+ This includes: numbers, variables, internal variables.
+ The return value will indicate a successful evaluation.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CASE typToken.eType OF
+    eTokenType.NUMBER:
+        FuEvaluateTokenSingle := TRUE;
+        lrResult := typToken.lrValue;
+    
+    eTokenType.VARIABLE, eTokenType.INTERNAL_VAR:
+        FuEvaluateTokenSingle := FuEvaluateVariable(typToken, uiCursor, alrVariables, alrInternalVariables, lrResult =&gt; lrResult, sError =&gt; sError);
+ELSE
+    sError := Standard.CONCAT('Invalid single token at position ', TO_STRING(uiCursor));
+END_CASE
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>165f9950-7d0f-4c1f-85c6-9fb3e2e1501f</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuEvaluateVariable" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="typToken">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+            </variable>
+            <variable name="uiCursor">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Only for error message</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alrVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+            <variable name="alrInternalVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="lrResult">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="tempVariableNr">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/accessmodifiers" handleUnknown="implementation">
+              <AccessModifiers Internal="true" />
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Evaluates variables and internal variables to their LREAL value.
+ The return value will indicate a successful evaluation.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">CASE typToken.eType OF
+    eTokenType.VARIABLE:
+        tempVariableNr := TO_UINT(typToken.lrValue);
+        
+        IF LOWER_BOUND(alrVariables, 1) &lt;= tempVariableNr AND_THEN tempVariableNr &lt;= UPPER_BOUND(alrVariables, 1) THEN
+            FuEvaluateVariable := TRUE;
+            lrResult := alrVariables[tempVariableNr];
+        ELSE
+            sError := Standard.CONCAT('Unknown variable ', TO_STRING(tempVariableNr));
+        END_IF
+    
+    eTokenType.INTERNAL_VAR:
+        tempVariableNr := TO_UINT(typToken.lrValue);
+        
+        IF LOWER_BOUND(alrInternalVariables, 1) &lt;= tempVariableNr AND_THEN tempVariableNr &lt;= UPPER_BOUND(alrInternalVariables, 1) THEN
+            FuEvaluateVariable := TRUE;
+            lrResult := alrInternalVariables[tempVariableNr];
+        ELSE
+            sError := Standard.CONCAT('Unknown internal variable ', TO_STRING(tempVariableNr));
+        END_IF
+ELSE
+    sError := Standard.CONCAT('Not a variable token at position ', TO_STRING(uiCursor));
+END_CASE
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>224e4c5f-ad94-4bb1-98f6-064215008116</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuInsertSortStepizeGroupFound" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="pbBuffer">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Pointer to buffer (array)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="diElements">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Array length</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="tempDataSize">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Element size</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempIndex">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Loop index</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempMinIndex">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Loop lowest index tested</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempMaxIndex">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Loop highest index tested</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempCurrentIndex">
+              <type>
+                <DINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Loop current tested element index</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempTemp">
+              <type>
+                <array>
+                  <dimension lower="1" upper="8" />
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Store temp value</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempPtrElement1">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="typStepizeGroupFound" />
+                  </baseType>
+                </pointer>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Pointer operator, current element</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempPtrElement2">
+              <type>
+                <pointer>
+                  <baseType>
+                    <derived name="typStepizeGroupFound" />
+                  </baseType>
+                </pointer>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Pointer operator, insert element</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempElement1">
+              <type>
+                <derived name="typStepizeGroupFound" />
+              </type>
+            </variable>
+            <variable name="tempElement2">
+              <type>
+                <derived name="typStepizeGroupFound" />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/accessmodifiers" handleUnknown="implementation">
+              <AccessModifiers Internal="true" />
+            </data>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Slightly modified version of:
+ https://forge.codesys.com/forge/talk/Runtime/thread/6ae1b1ff98/#31a5/f035/66da/5ba5/1553/b75d/ce46
+
+ This version uses instead of basic datatypes a struct and sorts it by {group number} and then {token index}</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">tempDataSize := SIZEOF(typStepizeGroupFound);
+
+FOR tempIndex := 1 TO diElements - 1 DO
+    // Highest index tested
+    tempMaxIndex := tempIndex;
+    
+    // Lowest index tested
+    tempMinIndex := -1;
+    
+    // Element we need to insert
+    tempPtrElement2 := pbBuffer + TO_UDINT(tempDataSize*tempIndex);
+    
+    REPEAT
+        // Current test index
+        tempCurrentIndex := tempMinIndex + (tempMaxIndex - tempMinIndex) / 2;
+        
+        // Get element at current test index
+        tempPtrElement1 := pbBuffer + TO_UDINT(tempDataSize*tempCurrentIndex);
+        
+        // Test for ordering
+        SysMem.SysMemCpy(pDest := ADR(tempElement1), pSrc := tempPtrElement1, udiCount := tempDataSize);
+        SysMem.SysMemCpy(pDest := ADR(tempElement2), pSrc := tempPtrElement2, udiCount := tempDataSize);
+        
+        IF tempElement1.uiGroupNumber = tempElement2.uiGroupNumber THEN
+            IF tempElement1.uiTokenIndex &gt; tempElement2.uiTokenIndex THEN
+                tempMaxIndex := tempCurrentIndex;
+            ELSE
+                tempMinIndex := tempCurrentIndex;
+            END_IF
+        ELSIF tempElement1.uiGroupNumber &gt; tempElement2.uiGroupNumber THEN
+            tempMaxIndex := tempCurrentIndex;
+        ELSE
+            tempMinIndex := tempCurrentIndex;
+        END_IF
+    UNTIL
+        (tempMaxIndex - tempMinIndex) &lt; 2
+    END_REPEAT
+    
+    // Save value to insert
+    SysMem.SysMemCpy(pDest := ADR(tempTemp), pSrc := tempPtrElement2, udiCount := tempDataSize);
+    
+    // Move block
+    SysMem.SysMemMove(
+        pDest := (pbBuffer + tempDataSize * (TO_UDINT(tempMaxIndex) + 1)),
+        pSrc := (pbBuffer + TO_UDINT((tempDataSize * tempMaxIndex))),
+        udiCount := (tempDataSize * TO_UDINT(tempIndex - tempMaxIndex))
+    );
+    
+    // set key
+    SysMem.SysMemCpy(pDest := (pbBuffer + tempDataSize * TO_UDINT(tempMaxIndex)), pSrc := ADR(tempTemp), udiCount := tempDataSize);
+END_FOR
+
+FuInsertSortStepizeGroupFound := TRUE;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>e0794193-d9a3-46a2-b3d9-7cf32da40c09</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FbMathExpressionEvaluator" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="sExpression">
+              <type>
+                <string length="255" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> The expression string to tokenize</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="xDone">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Evaluation is done (either successfully or not) - set for one cycle</xhtml>
+              </documentation>
+            </variable>
+            <variable name="xError">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Error during any of the evaluator steps</xhtml>
+              </documentation>
+            </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Error message (may also contain nonsense if function returns TRUE)</xhtml>
+              </documentation>
+            </variable>
+            <variable name="lrResult">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Result output</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <inOutVars>
+            <variable name="xTrigger">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Trigger evaluation, gets automatically reset</xhtml>
+              </documentation>
+            </variable>
+          </inOutVars>
+          <inputVars>
+            <variable name="alrVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Inout" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Variables to use</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="staticUsedExpression">
+              <type>
+                <string length="255" />
+              </type>
+            </variable>
+            <variable name="staticSteppedExpression">
+              <type>
+                <derived name="typExpressionOperationSteps" />
+              </type>
+            </variable>
+          </localVars>
+          <tempVars>
+            <variable name="tempSuccess">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="tempTokenizedExpression">
+              <type>
+                <derived name="typTokenizedExpression" />
+              </type>
+            </variable>
+          </tempVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> This is a high level Math Expression Evaluator.
+ It uses the low level functions to build a high level API.
+ As such it combines the three fundamental low level functions.
+
+ All expressions use LREAL as data type for operations, which is also the result output.
+
+ The following math operation behaviour applies:
+  - In general: If any of the operands is a special value (+Inf, -Inf, NaN), then an error is returned
+  - For Division (/): Division by zero yields depending on ParameterList.eDivisionByZero into an error or not
+  - For Modulo (%): Both operands are converted to LINT and the result is converted back to LREAL
+
+ Once evaluation gets triggered, the first time it gets triggered (or on expression change)
+ it will tokenize and "stepize" the given expression. Once these steps pass successfully,
+ it will evaluate the expressions. These output will change state accordingly.
+
+ This function block will reset the "xTrigger" IN_OUT variable once it's done.
+
+ Since all the necessary low level functions are synchronous, execution of this function block
+ is also synchronous and thus xTrigger will get reset immediately after execution.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF xTrigger THEN
+    IF sExpression = '' THEN
+        xTrigger := FALSE;
+        xDone := TRUE;
+        xError := TRUE;
+        sError := 'Empty expression';
+        lrResult := 0.0;
+        RETURN;
+    END_IF
+    
+    IF staticUsedExpression &lt;&gt; sExpression THEN
+        staticUsedExpression := '';
+        
+        tempSuccess := FuTokenizeExpression(sExpression, typExpression =&gt; tempTokenizedExpression);
+        IF NOT tempSuccess THEN
+            xTrigger := FALSE;
+            xDone := TRUE;
+            xError := TRUE;
+            sError := 'Error during tokenize';
+            lrResult := 0.0;
+            RETURN;
+        END_IF
+        
+        tempSuccess := FuStepizeExpression(tempTokenizedExpression, typSteps =&gt; staticSteppedExpression);
+        IF NOT tempSuccess THEN
+            xTrigger := FALSE;
+            xDone := TRUE;
+            xError := TRUE;
+            sError := 'Error during stepize';
+            lrResult := 0.0;
+            RETURN;
+        END_IF
+        
+        staticUsedExpression := sExpression;
+    END_IF
+    
+    IF FuEvaluateExpression(staticSteppedExpression, alrVariables, lrResult =&gt; lrResult, sError =&gt; sError) THEN
+        // Assert error string is empty if no error
+        sError := '';
+    ELSE
+        xError := TRUE;
+    END_IF
+    
+    xTrigger := FALSE;
+    xDone := TRUE;
+    
+    RETURN;
+END_IF
+
+xDone := FALSE;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>76dd7428-5b9b-4fe6-a5f0-daa8b7b54ed2</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuEvaluateExpression" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="typExpressionSteps">
+              <type>
+                <derived name="typExpressionOperationSteps" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> The expression providing steps for complex terms</xhtml>
+              </documentation>
+            </variable>
+            <variable name="alrVariables">
+              <type>
+                <pointer>
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </pointer>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="variable_length_array_original_scope" Value="Input" />
+                    <Attribute Name="variable_length_array" Value="ARRAY[*] OF LREAL" />
+                    <Attribute Name="Dimensions" Value="1" />
+                  </Attributes>
+                </data>
+              </addData>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Variables to use</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="lrResult">
+              <type>
+                <LREAL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Result output</xhtml>
+              </documentation>
+            </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Error message (may also contain nonsense if function returns TRUE)</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="i">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempInternalVariables">
+              <type>
+                <array>
+                  <dimension lower="1" upper="ParameterList.uiMaxInternalVars" />
+                  <baseType>
+                    <LREAL />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Evaluates the expression.
+ All expressions use LREAL as data type for operations, which is also the result output.
+
+ The following math operation behaviour applies:
+  - In general: If any of the operands is a special value (+Inf, -Inf, NaN), then an error is returned
+  - For Division (/): Division by zero yields depending on ParameterList.eDivisionByZero into an error or not
+  - For Modulo (%): Both operands are converted to LINT and the result is converted back to LREAL
+
+ The return value will indicate a successful evaluation.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF typExpressionSteps.uiCountSteps = 0 THEN
+    FuEvaluateExpression := TRUE;
+    RETURN;
+END_IF
+
+FOR i := 0 TO (typExpressionSteps.uiCountSteps - 1) BY 1 DO
+    IF NOT FuEvaluateStep(typExpressionSteps.atSteps[i],  alrVariables, tempInternalVariables, lrResult =&gt; lrResult, sError =&gt; sError) THEN
+        RETURN;
+    END_IF
+    
+    IF
+        typExpressionSteps.atSteps[i].uiInternalVariableTarget &gt; 0 AND_THEN
+        typExpressionSteps.atSteps[i].uiInternalVariableTarget &gt;= 1 AND_THEN
+        typExpressionSteps.atSteps[i].uiInternalVariableTarget &lt;= ParameterList.uiMaxInternalVars
+    THEN
+        tempInternalVariables[typExpressionSteps.atSteps[i].uiInternalVariableTarget] := lrResult;
+    END_IF
+END_FOR
+
+FuEvaluateExpression := TRUE;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>92f079c0-45b6-4608-947a-a038dc306ba8</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuStepizeExpression" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="typTokenExpression">
+              <type>
+                <derived name="typTokenizedExpression" />
+              </type>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="typSteps">
+              <type>
+                <derived name="typExpressionOperationSteps" />
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="i">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="j">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempEndTokenIndex">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempFoundGroups">
+              <type>
+                <array>
+                  <dimension lower="0" upper="ParameterList.uiMaxExpressionTokens" />
+                  <baseType>
+                    <derived name="typStepizeGroupFound" />
+                  </baseType>
+                </array>
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Data used throughout each loop iteration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempCountFoundGroups">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempFoundGroupsTokens">
+              <type>
+                <array>
+                  <dimension lower="0" upper="ParameterList.uiMaxExpressionTokens" />
+                  <baseType>
+                    <derived name="typExpressionToken" />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="tempCountFoundGroupsTokens">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempLastStartedGroups">
+              <type>
+                <array>
+                  <dimension lower="0" upper="ParameterList.uiMaxExpressionTokens" />
+                  <baseType>
+                    <UINT />
+                  </baseType>
+                </array>
+              </type>
+            </variable>
+            <variable name="tempCountLastStartedGroups">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+          </localVars>
+          <localVars constant="true">
+            <variable name="INVALID_TOKEN">
+              <type>
+                <derived name="typExpressionToken" />
+              </type>
+              <initialValue>
+                <structValue>
+                  <value member="eType">
+                    <simpleValue value="eTokenType.INVALID" />
+                  </value>
+                </structValue>
+              </initialValue>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="suppress_warning_0" Value="C0228" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+            <variable name="EMPTY_TOKEN_ARR">
+              <type>
+                <array>
+                  <dimension lower="0" upper="ParameterList.uiMaxExpressionTokens" />
+                  <baseType>
+                    <derived name="typExpressionToken" />
+                  </baseType>
+                </array>
+              </type>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+                  <Attributes>
+                    <Attribute Name="suppress_warning_0" Value="C0228" />
+                  </Attributes>
+                </data>
+              </addData>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Turns a tokenized expression into a stepized expression,
+ providing steps for each "group" operation to be done,
+ including taking care of ordering.
+
+ Group operations include function calls and expressions inside ().
+ Operations such as "1 + 5 - 2" are not split up and
+ are evaluated left to right from the evaluator.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF typTokenExpression.uiCountTokens = 0 THEN
+    RETURN;
+END_IF
+
+// Step 1: Find each group and make a list out of it
+FOR i := 0 TO (typTokenExpression.uiCountTokens - 1) BY 1 DO
+    IF
+        typTokenExpression.atTokens[i].eType = eTokenType.GROUP_START OR_ELSE
+        typTokenExpression.atTokens[i].eType = eTokenType.FUNCTION_CALL
+    THEN
+        tempFoundGroups[tempCountFoundGroups].uiTokenIndex := i;
+        tempFoundGroups[tempCountFoundGroups].uiGroupNumber := typTokenExpression.atTokens[i].uiGroupNumber;
+        
+        tempCountFoundGroups := tempCountFoundGroups + 1;
+    END_IF
+END_FOR
+
+// Skip step 2 and 3 if we found NO groups
+IF tempCountFoundGroups &gt; 0 THEN
+    // Step 2: Sort the found groups array by group number and then token index
+    FuInsertSortStepizeGroupFound(ADR(tempFoundGroups), tempCountFoundGroups);
+    
+    // Step 3: Consume found groups, take the tokens and insert ASSIGN_INTERNAL_VAR tokens
+    //         -&gt; Note: The found groups index + 1 corresponds to the internal variable number
+    FOR i := 0 TO (tempCountFoundGroups - 1) BY 1 DO
+        tempFoundGroupsTokens := EMPTY_TOKEN_ARR;
+        tempCountFoundGroupsTokens := 0;
+        
+        tempCountLastStartedGroups := 0;
+        tempEndTokenIndex := 0;
+        
+        FOR j := tempFoundGroups[i].uiTokenIndex TO (typTokenExpression.uiCountTokens - 1) BY 1 DO
+            IF typTokenExpression.atTokens[j].eType = eTokenType.INVALID THEN
+                CONTINUE;
+            END_IF
+            
+            IF typTokenExpression.atTokens[j].eType = eTokenType.GROUP_START AND_THEN typTokenExpression.atTokens[j].uiGroupNumber &lt;&gt; tempFoundGroups[i].uiGroupNumber THEN
+                // Another group started, we need to ignore those tokens now
+                tempLastStartedGroups[tempCountLastStartedGroups] := typTokenExpression.atTokens[j].uiGroupNumber;
+                tempCountLastStartedGroups := tempCountLastStartedGroups + 1;
+                
+                CONTINUE;
+            ELSIF
+                typTokenExpression.atTokens[j].eType = eTokenType.GROUP_END AND_THEN
+                tempCountLastStartedGroups &gt; 0 AND_THEN
+                typTokenExpression.atTokens[j].uiGroupNumber = tempLastStartedGroups[(tempCountLastStartedGroups - 1)]
+            THEN
+                // Another group ended, we can now start caring again, if the count drops to 0
+                tempCountLastStartedGroups := tempCountLastStartedGroups - 1;
+                
+                CONTINUE; // Taking care of using the internal variable of each group will be done later using "tempSkipTokenHints"
+            ELSIF tempCountLastStartedGroups &gt; 0 THEN
+                // As long as another group are still open, prevent the other two clauses (the elsif and else) from being able to execute
+                CONTINUE;
+            END_IF
+            
+            IF typTokenExpression.atTokens[j].eType = eTokenType.GROUP_END AND_THEN typTokenExpression.atTokens[j].uiGroupNumber = tempFoundGroups[i].uiGroupNumber THEN
+                // We've reached the end of our group, stop taking tokens away, add a hint for later about skipping tokens, and exit this loop
+                tempEndTokenIndex := j;
+                EXIT;
+            ELSIF typTokenExpression.atTokens[j].eType = eTokenType.GROUP_START AND_THEN typTokenExpression.atTokens[j].uiGroupNumber = tempFoundGroups[i].uiGroupNumber THEN
+                // Ignore group starts of ourself (we dont need those tokens)
+                CONTINUE;
+            END_IF
+            
+            IF typTokenExpression.atTokens[j].eType = eTokenType.FUNCTION_CALL_END AND_THEN typTokenExpression.atTokens[j].uiGroupNumber = tempFoundGroups[i].uiGroupNumber THEN
+                // We've reached the end of our group, stop taking tokens away, add a hint for later about skipping tokens, and exit this loop
+                tempEndTokenIndex := j;
+                EXIT;
+            END_IF
+            
+            tempFoundGroupsTokens[tempCountFoundGroupsTokens] := typTokenExpression.atTokens[j];
+            tempCountFoundGroupsTokens := tempCountFoundGroupsTokens + 1;
+        END_FOR
+        
+        typSteps.atSteps[typSteps.uiCountSteps].atTokens := tempFoundGroupsTokens;
+        typSteps.atSteps[typSteps.uiCountSteps].uiCountTokens := tempCountFoundGroupsTokens;
+        typSteps.atSteps[typSteps.uiCountSteps].uiInternalVariableTarget := i + 1;
+        
+        IF i &gt;= ParameterList.uiMaxInternalVars THEN
+            FuStepizeExpression := FALSE;
+            RETURN;
+        END_IF
+        
+        // Replace all tokens with invalid tokens, if necessary, the first token will be replaced with INTERNAL_VAR
+        FOR j := tempFoundGroups[i].uiTokenIndex TO tempEndTokenIndex BY 1 DO
+            typTokenExpression.atTokens[j] := INVALID_TOKEN;
+        END_FOR
+        
+        IF tempFoundGroups[i].uiTokenIndex = 0 AND_THEN tempEndTokenIndex = (typTokenExpression.uiCountTokens - 1) THEN
+            ;// Do not generate internal var token, because all tokens are covered
+        ELSE
+            // Rewrite tokens and replace them with one INTERNAL_VAR and INVALID tokens
+            typTokenExpression.atTokens[tempFoundGroups[i].uiTokenIndex] := INVALID_TOKEN;
+            typTokenExpression.atTokens[tempFoundGroups[i].uiTokenIndex].eType := eTokenType.INTERNAL_VAR;
+            typTokenExpression.atTokens[tempFoundGroups[i].uiTokenIndex].lrValue := TO_LREAL((i + 1));
+        END_IF
+        
+        typSteps.uiCountSteps := typSteps.uiCountSteps + 1;
+    END_FOR
+END_IF
+
+// Step 4: Rewrite the tokens, skip INVALID tokens
+FOR i := 0 TO (typTokenExpression.uiCountTokens - 1) BY 1 DO
+    IF typTokenExpression.atTokens[i].eType = eTokenType.INVALID THEN
+        CONTINUE;
+    END_IF
+    
+    j := typSteps.atSteps[typSteps.uiCountSteps].uiCountTokens;
+    
+    typSteps.atSteps[typSteps.uiCountSteps].atTokens[j] := typTokenExpression.atTokens[i];
+    typSteps.atSteps[typSteps.uiCountSteps].uiCountTokens := j + 1;
+END_FOR
+
+IF typSteps.atSteps[typSteps.uiCountSteps].uiCountTokens &gt; 0 THEN
+    typSteps.uiCountSteps := typSteps.uiCountSteps + 1;
+END_IF
+
+// Step 5: Profit, each step should now contain a particular operation set
+// Note: Operations as "1 + 5 + 6" are handled inline in the evaluator, since the result of the previous op "1 + 5" can be used as "$result + 5"
+FuStepizeExpression := TRUE;
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>2cd9f15d-99a6-4ae1-8b4e-04bf3b417bf0</ObjectId>
+          </data>
+        </addData>
+      </pou>
+      <pou name="FuTokenizeExpression" pouType="function">
+        <interface>
+          <returnType>
+            <BOOL />
+          </returnType>
+          <inputVars>
+            <variable name="sExpression">
+              <type>
+                <string length="255" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> The expression string to tokenize</xhtml>
+              </documentation>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="typExpression">
+              <type>
+                <derived name="typTokenizedExpression" />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> The tokenized expression</xhtml>
+              </documentation>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="i">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="j">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempChar">
+              <type>
+                <BYTE />
+              </type>
+            </variable>
+            <variable name="tempNextChar">
+              <type>
+                <BYTE />
+              </type>
+            </variable>
+            <variable name="tempFunEndDetected">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="tempIndex">
+              <type>
+                <UINT />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Data used throughout each loop iteration</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempIdentifierStr">
+              <type>
+                <string length="5" />
+              </type>
+            </variable>
+            <variable name="tempPtrByte">
+              <type>
+                <pointer>
+                  <baseType>
+                    <BYTE />
+                  </baseType>
+                </pointer>
+              </type>
+            </variable>
+            <variable name="tempVarOpen">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="tempGroupOpen">
+              <type>
+                <INT />
+              </type>
+              <initialValue>
+                <simpleValue value="0" />
+              </initialValue>
+            </variable>
+            <variable name="tempGroupNum">
+              <type>
+                <UINT />
+              </type>
+              <initialValue>
+                <simpleValue value="50" />
+              </initialValue>
+            </variable>
+            <variable name="tempFunOpen">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="tempFunIndex">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempFunArgsCount">
+              <type>
+                <UINT />
+              </type>
+            </variable>
+            <variable name="tempNumOpen">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="tempNumSign">
+              <type>
+                <BOOL />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> TRUE = negative</xhtml>
+              </documentation>
+            </variable>
+            <variable name="tempValueStr">
+              <type>
+                <string length="80" />
+              </type>
+            </variable>
+          </localVars>
+          <addData>
+            <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+              <Attributes>
+                <Attribute Name="qualified_only" Value="" />
+              </Attributes>
+            </data>
+          </addData>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Tokenizes a given math expression into a stream of tokens.
+ The return value signifies whether tokenization was successful,
+ or during tokenization an invalid expression was encountered.
+ Please note, during tokenization not all error cases are checked.</xhtml>
+          </documentation>
+        </interface>
+        <body>
+          <ST>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml">IF sExpression = '' THEN
+    RETURN;
+END_IF
+
+// Assert a clean string (CODESYS does not assert that the whole string contains NUL bytes, only sets the first byte as NUL byte!)
+// tempValueStr is VAR_TEMP and should get completely initialized as an empty string (all bytes = NUL), but the truth is the memory space
+// gets reused and thus leftovers from the previous execution can be left there, since only the first byte is set to NUL
+// (which is described by CODESYS as "new initialization", which is technically wrong!)
+FOR i := 0 TO SIZEOF(tempValueStr) BY 1 DO
+    tempValueStr[i] := 0;
+END_FOR
+
+FOR i := 0 TO 255 BY 1 DO
+    IF sExpression[i] = 0 OR_ELSE tempIndex &gt; ParameterList.uiMaxExpressionTokens THEN
+        EXIT;
+    END_IF
+    
+    tempIdentifierStr := '';
+    tempPtrByte := 0;
+    
+    tempChar := sExpression[i];
+    
+    CASE tempChar OF
+        Constants.CHAR_WHITESPACE, Constants.CHAR_NEWLINE, Constants.CHAR_CAR_RETURN:
+            IF tempNumOpen THEN
+                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+                
+                tempValueStr := '';
+                tempNumOpen := FALSE;
+            ELSIF tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
+                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+                
+                tempValueStr := '';
+                tempVarOpen := FALSE;
+            ELSE
+                CONTINUE; // Ignore whitespace, newline (\n) and carriage return (\r)
+            END_IF
+        
+        Constants.CHAR_VARIABLE:
+            IF tempVarOpen OR_ELSE tempNumOpen THEN
+                RETURN;
+            END_IF
+            
+            tempVarOpen := TRUE;
+            tempValueStr := '';
+            
+            CONTINUE;
+        
+        Constants.CHAR_GROUP_START:
+            tempGroupOpen := tempGroupOpen + 1;
+            tempGroupNum := tempGroupNum - 1;
+            
+            typExpression.atTokens[tempIndex].eType := eTokenType.GROUP_START;
+            typExpression.atTokens[tempIndex].uiGroupNumber := tempGroupNum;
+        
+        Constants.CHAR_GROUP_END:
+            tempFunEndDetected := (tempFunOpen AND_THEN tempGroupNum = typExpression.atTokens[tempFunIndex].uiGroupNumber);
+            
+            IF tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
+                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+                
+                tempValueStr := '';
+                tempVarOpen := FALSE;
+                
+                tempIndex := tempIndex + 1;
+                typExpression.uiCountTokens := tempIndex;
+                
+                IF tempFunEndDetected THEN
+                    tempFunArgsCount := tempFunArgsCount + 1;
+                END_IF
+            ELSIF tempNumOpen THEN
+                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+                
+                tempValueStr := '';
+                tempNumOpen := FALSE;
+                
+                tempIndex := tempIndex + 1;
+                typExpression.uiCountTokens := tempIndex;
+                
+                IF tempFunEndDetected THEN
+                    tempFunArgsCount := tempFunArgsCount + 1;
+                END_IF
+            END_IF
+            
+            typExpression.atTokens[tempIndex].eType := SEL(tempFunEndDetected, eTokenType.GROUP_END, eTokenType.FUNCTION_CALL_END);
+            typExpression.atTokens[tempIndex].uiGroupNumber := tempGroupNum;
+            tempGroupNum := tempGroupNum + 1;
+            
+            IF tempFunEndDetected THEN
+                // Assert for variable args functions, we have at least that many arguments,
+                // or for fixed args functions, we have that many arguments as currently stored
+                IF typExpression.atTokens[tempFunIndex].xArgsVariable THEN
+                    IF typExpression.atTokens[tempFunIndex].uiArgsCount &gt; tempFunArgsCount THEN
+                        RETURN;
+                    END_IF
+                ELSIF typExpression.atTokens[tempFunIndex].uiArgsCount &lt;&gt; tempFunArgsCount THEN
+                    RETURN;
+                END_IF
+                
+                IF tempFunArgsCount &gt; Constants.MAX_FUN_ARGS THEN
+                    RETURN;
+                END_IF
+                
+                typExpression.atTokens[tempFunIndex].uiArgsCount := tempFunArgsCount;
+                
+                tempFunOpen := FALSE;
+                tempFunArgsCount := 0;
+            ELSE
+                tempGroupOpen := tempGroupOpen - 1;
+            END_IF
+        
+        Constants.CHAR_COMMA:
+            IF NOT tempFunOpen THEN
+                RETURN;
+            ELSIF tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
+                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+                
+                tempValueStr := '';
+                tempVarOpen := FALSE;
+                
+                tempIndex := tempIndex + 1;
+                typExpression.uiCountTokens := tempIndex;
+            ELSIF tempNumOpen THEN
+                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+                
+                tempValueStr := '';
+                tempNumOpen := FALSE;
+                
+                tempIndex := tempIndex + 1;
+                typExpression.uiCountTokens := tempIndex;
+            END_IF
+            
+            tempFunArgsCount := tempFunArgsCount + 1;
+            CONTINUE;
+        
+        Constants.CHAR_DOT:
+            IF NOT tempNumOpen THEN
+                RETURN;
+            END_IF
+            
+            tempValueStr := Standard.CONCAT(tempValueStr, '.');
+            CONTINUE;
+        
+        // "-" must be handled differently, as we may need to handle it as a sign
+       Constants. CHAR_ADD, Constants.CHAR_SUB, Constants.CHAR_MUL,
+        Constants.CHAR_DIV, Constants.CHAR_EXP, Constants.CHAR_MOD:
+            IF tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
+                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+                
+                tempValueStr := '';
+                tempVarOpen := FALSE;
+                
+                tempIndex := tempIndex + 1;
+                typExpression.uiCountTokens := tempIndex;
+            ELSIF tempNumOpen THEN
+                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+                
+                tempValueStr := '';
+                tempNumOpen := FALSE;
+                
+                tempIndex := tempIndex + 1;
+                typExpression.uiCountTokens := tempIndex;
+            END_IF
+            
+            // If operator is ADD/SUB, then peek ahead to see if a number follows immediately (it's a negative number and not an operation)
+            tempNextChar := sExpression[(i + 1)];
+            IF
+                (tempChar = Constants.CHAR_ADD OR_ELSE tempChar = Constants.CHAR_SUB) AND_THEN
+                tempNextChar &gt;= Constants.ASCII_NUM_START AND_THEN
+                tempNextChar &lt;= Constants.ASCII_NUM_END
+            THEN
+                tempNumOpen := TRUE;
+                tempValueStr := SEL(tempChar = Constants.CHAR_ADD, '-', '');
+                
+                CONTINUE;
+            END_IF
+            
+            typExpression.atTokens[tempIndex].eType := eTokenType.MATH_OP;
+            typExpression.atTokens[tempIndex].sIdentifier := Util.WORD_AS_STRING(tempChar, TRUE);
+    ELSE
+        IF tempChar &gt;= Constants.ASCII_NUM_START AND_THEN tempChar &lt;= Constants.ASCII_NUM_END THEN
+            IF NOT tempVarOpen AND_THEN NOT tempNumOpen THEN
+                tempNumOpen := TRUE;
+                tempValueStr := '';
+            END_IF
+            
+            tempValueStr := Standard.CONCAT(tempValueStr, TO_STRING((tempChar - Constants.ASCII_NUM_START)));
+            CONTINUE;
+        ELSIF tempChar &gt;= Constants.ASCII_ALPHA_START AND_THEN tempChar &lt;= Constants.ASCII_ALPHA_END THEN
+            // We can not call a function inside a function
+            IF tempFunOpen THEN
+                RETURN;
+            END_IF
+            
+            FOR j := i TO (i + 5) BY 1 DO
+                IF sExpression[j] = Constants.CHAR_GROUP_START THEN
+                    EXIT;
+                END_IF
+                
+                tempIdentifierStr[(j - i)] := sExpression[j];
+                
+                // Assert string is correctly NUL terminated (prevent "MAXIN" when first "LIMIT" and then "MAX" was tokenized)
+                tempIdentifierStr[(j - i + 1)] := 0;
+            END_FOR
+            
+            i := j - 1;
+            
+            IF
+                tempIdentifierStr = Constants.FUN_ABS OR_ELSE
+                tempIdentifierStr = Constants.FUN_ACOS OR_ELSE
+                tempIdentifierStr = Constants.FUN_ASIN OR_ELSE
+                tempIdentifierStr = Constants.FUN_ATAN OR_ELSE
+                tempIdentifierStr = Constants.FUN_CEIL OR_ELSE
+                tempIdentifierStr = Constants.FUN_COS OR_ELSE
+                tempIdentifierStr = Constants.FUN_DEG OR_ELSE
+                tempIdentifierStr = Constants.FUN_FLOOR OR_ELSE
+                tempIdentifierStr = Constants.FUN_LOG OR_ELSE
+                tempIdentifierStr = Constants.FUN_LN OR_ELSE
+                tempIdentifierStr = Constants.FUN_RAD OR_ELSE
+                tempIdentifierStr = Constants.FUN_ROUND OR_ELSE
+                tempIdentifierStr = Constants.FUN_SIN OR_ELSE
+                tempIdentifierStr = Constants.FUN_SQRT OR_ELSE
+                tempIdentifierStr = Constants.FUN_TAN
+            THEN
+                // Single arg functions
+                typExpression.atTokens[tempIndex].uiArgsCount := 1;
+            ELSIF
+                tempIdentifierStr = Constants.FUN_TRUNC
+            THEN
+                // Dual arg functions
+                typExpression.atTokens[tempIndex].uiArgsCount := 2;
+            ELSIF
+                tempIdentifierStr = Constants.FUN_LIMIT
+            THEN
+                // Triple arg functions
+                typExpression.atTokens[tempIndex].uiArgsCount := 3;
+            ELSIF
+                tempIdentifierStr = Constants.FUN_AVGA OR_ELSE
+                tempIdentifierStr = Constants.FUN_MAX OR_ELSE
+                tempIdentifierStr = Constants.FUN_MIN
+            THEN
+                // Variable arg functions (at least 2)
+                typExpression.atTokens[tempIndex].uiArgsCount := 2;
+                typExpression.atTokens[tempIndex].xArgsVariable := TRUE;
+            ELSE
+                // Invalid function name
+                RETURN;
+            END_IF
+            
+            // Peek at the next expression token and check if it's a GROUP_START token
+            IF sExpression[(i + 1)] &lt;&gt; Constants.CHAR_GROUP_START THEN
+                // If not, invalid expression
+                RETURN;
+            END_IF
+            
+            // Skip next token, as we've already consumed it
+            i := i + 1;
+            
+            tempFunIndex := tempIndex;
+            tempGroupNum := tempGroupNum - 1;
+            
+            typExpression.atTokens[tempIndex].eType := eTokenType.FUNCTION_CALL;
+            typExpression.atTokens[tempIndex].sIdentifier := tempIdentifierStr;
+            typExpression.atTokens[tempIndex].uiGroupNumber := tempGroupNum;
+            
+            tempFunOpen := TRUE;
+            tempFunArgsCount := 0;
+        ELSE
+            // Invalid expression
+            RETURN;
+        END_IF
+    END_CASE
+    
+    tempIndex := tempIndex + 1;
+    typExpression.uiCountTokens := tempIndex;
+END_FOR
+
+// If var or num open, close it and append as token
+IF tempVarOpen THEN
+    typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
+    typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+    
+    tempIndex := tempIndex + 1;
+ELSIF tempNumOpen THEN
+    typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+    typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
+    
+    tempIndex := tempIndex + 1;
+END_IF
+
+typExpression.uiCountTokens := tempIndex;
+FuTokenizeExpression := (tempIndex &gt; 0 AND_THEN NOT tempVarOpen AND_THEN tempGroupOpen = 0 AND_THEN NOT tempFunOpen);
+</xhtml>
+          </ST>
+        </body>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>87c9b454-f704-4248-b948-0564ebcabcd3</ObjectId>
+          </data>
+        </addData>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation">
+      <globalVars name="Constants" constant="true">
+        <variable name="CHAR_WHITESPACE">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="32" />
+          </initialValue>
+        </variable>
+        <variable name="CHAR_NEWLINE">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="10" />
+          </initialValue>
+        </variable>
+        <variable name="CHAR_CAR_RETURN">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="13" />
+          </initialValue>
+        </variable>
+        <variable name="CHAR_VARIABLE">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="92" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> \</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_GROUP_START">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="40" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> (</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_GROUP_END">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="41" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> )</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_COMMA">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="44" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> ,</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_DOT">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="46" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> .</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_LC_E">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="101" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> e</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_ADD">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="43" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> + (also used for sign)</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_SUB">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="45" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> - (also used for sign)</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_MUL">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="42" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> *</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_DIV">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="47" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> /</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_EXP">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="94" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> ^</xhtml>
+          </documentation>
+        </variable>
+        <variable name="CHAR_MOD">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="37" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> %</xhtml>
+          </documentation>
+        </variable>
+        <variable name="ASCII_ALPHA_START">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="65" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> A</xhtml>
+          </documentation>
+        </variable>
+        <variable name="ASCII_ALPHA_END">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="90" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Z</xhtml>
+          </documentation>
+        </variable>
+        <variable name="ASCII_NUM_START">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="48" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> 0</xhtml>
+          </documentation>
+        </variable>
+        <variable name="ASCII_NUM_END">
+          <type>
+            <BYTE />
+          </type>
+          <initialValue>
+            <simpleValue value="57" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> 9</xhtml>
+          </documentation>
+        </variable>
+        <variable name="MAX_FUN_ARGS">
+          <type>
+            <UINT />
+          </type>
+          <initialValue>
+            <simpleValue value="9" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_ABS">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'ABS'" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Single arg functions</xhtml>
+          </documentation>
+        </variable>
+        <variable name="FUN_ACOS">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'ACOS'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_ASIN">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'ASIN'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_ATAN">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'ATAN'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_CEIL">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'CEIL'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_COS">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'COS'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_DEG">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'DEG'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_FLOOR">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'FLOOR'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_LOG">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'LOG'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_LN">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'LN'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_RAD">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'RAD'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_ROUND">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'ROUND'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_SIN">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'SIN'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_SQRT">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'SQRT'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_TAN">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'TAN'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_TRUNC">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'TRUNC'" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Dual arg functions</xhtml>
+          </documentation>
+        </variable>
+        <variable name="FUN_LIMIT">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'LIMIT'" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Triple arg functions</xhtml>
+          </documentation>
+        </variable>
+        <variable name="FUN_AVGA">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'AVG'" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Variable arg functions (2..9)</xhtml>
+          </documentation>
+        </variable>
+        <variable name="FUN_MAX">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'MAX'" />
+          </initialValue>
+        </variable>
+        <variable name="FUN_MIN">
+          <type>
+            <string length="5" />
+          </type>
+          <initialValue>
+            <simpleValue value="'MIN'" />
+          </initialValue>
+        </variable>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>9cd530e3-f3e6-466b-94f5-189a6f71930b</ObjectId>
+          </data>
+        </addData>
+      </globalVars>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/globalvars" handleUnknown="implementation">
+      <globalVars name="ParameterList" constant="true">
+        <variable name="uiMaxExpressionTokens">
+          <type>
+            <UINT />
+          </type>
+          <initialValue>
+            <simpleValue value="63" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> The maximum amount of tokens to support parsing (compiling) - the counting starts from 0, so add 1 to the number in your mind</xhtml>
+          </documentation>
+        </variable>
+        <variable name="uiMaxInternalVars">
+          <type>
+            <UINT />
+          </type>
+          <initialValue>
+            <simpleValue value="15" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> The maximum amount of internal variables per expression</xhtml>
+          </documentation>
+        </variable>
+        <variable name="uiMaxStepsPerOperation">
+          <type>
+            <UINT />
+          </type>
+          <initialValue>
+            <simpleValue value="15" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> The maximum amount of steps per operation - the counting starts from 0, so add 1 to the number in your mind</xhtml>
+          </documentation>
+        </variable>
+        <variable name="eDivisionByZero">
+          <type>
+            <derived name="eDivisionByZeroHandling" />
+          </type>
+          <initialValue>
+            <simpleValue value="eDivisionByZeroHandling.ERROR" />
+          </initialValue>
+          <documentation>
+            <xhtml xmlns="http://www.w3.org/1999/xhtml"> Describes how a division by zero situation is to be handled</xhtml>
+          </documentation>
+        </variable>
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
+            <Attributes>
+              <Attribute Name="parameterlist" Value="" />
+              <Attribute Name="qualified_only" Value="" />
+            </Attributes>
+          </data>
+          <data name="http://www.3s-software.com/plcopenxml/objectid" handleUnknown="discard">
+            <ObjectId>4a7f707e-d72a-4ddc-9a3a-e259aded1899</ObjectId>
+          </data>
+        </addData>
+      </globalVars>
+    </data>
+    <data name="http://www.3s-software.com/plcopenxml/projectstructure" handleUnknown="discard">
+      <ProjectStructure>
+        <Folder Name="20 Program Organization Units">
+          <Folder Name="Low Level">
+            <Object Name="FuTokenizeExpression" ObjectId="87c9b454-f704-4248-b948-0564ebcabcd3" />
+            <Object Name="FuStepizeExpression" ObjectId="2cd9f15d-99a6-4ae1-8b4e-04bf3b417bf0" />
+            <Object Name="FuEvaluateExpression" ObjectId="92f079c0-45b6-4608-947a-a038dc306ba8" />
+          </Folder>
+          <Folder Name="_Internal">
+            <Object Name="FuInsertSortStepizeGroupFound" ObjectId="e0794193-d9a3-46a2-b3d9-7cf32da40c09" />
+            <Object Name="FuEvaluateStep" ObjectId="a2d11e64-8168-4dfe-81ce-fa6ddd505989" />
+            <Object Name="FuEvaluateOperation" ObjectId="2caa2716-9539-4e6e-a617-5a8e3e9c955e" />
+            <Object Name="FuEvaluateTokenSingle" ObjectId="165f9950-7d0f-4c1f-85c6-9fb3e2e1501f" />
+            <Object Name="FuEvaluateVariable" ObjectId="224e4c5f-ad94-4bb1-98f6-064215008116" />
+            <Object Name="FuEvaluateMathOp" ObjectId="3b74bf5e-3b1b-40c6-b22f-636b63e6a5e3" />
+            <Object Name="FuEvaluateFunctionCall" ObjectId="10338df6-f0d0-4bc6-b251-9bf725ce2690" />
+          </Folder>
+          <Folder Name="High Level">
+            <Object Name="FbMathExpressionEvaluator" ObjectId="76dd7428-5b9b-4fe6-a5f0-daa8b7b54ed2" />
+          </Folder>
+        </Folder>
+        <Folder Name="40 Data Types">
+          <Folder Name="_Internal">
+            <Object Name="typExpressionToken" ObjectId="910a66ef-8578-411c-a123-9c6a071b9d29" />
+            <Object Name="typExpressionStep" ObjectId="aeda433c-072d-4816-ad84-5eafb65c67a1" />
+            <Object Name="typStepizeGroupFound" ObjectId="45147783-8653-42ff-b64b-bf08797a7c86" />
+            <Object Name="typStepizeRewriteTokenSkips" ObjectId="e83ceda4-74a6-4b93-95d8-034f5b41a3f8" />
+          </Folder>
+          <Object Name="typTokenizedExpression" ObjectId="770f45c7-4e30-4154-86a0-b061c330b05d" />
+          <Object Name="eTokenType" ObjectId="fe87216d-5275-4488-a7eb-0af1fec86796" />
+          <Object Name="typExpressionOperationSteps" ObjectId="6ad2c6c6-cf20-4664-abdc-bc2e8aeebd73" />
+          <Object Name="eDivisionByZeroHandling" ObjectId="f5bccc7f-0102-433c-b6ec-33ac33a84fd0" />
+        </Folder>
+        <Object Name="Constants" ObjectId="9cd530e3-f3e6-466b-94f5-189a6f71930b" />
+        <Object Name="ParameterList" ObjectId="4a7f707e-d72a-4ddc-9a3a-e259aded1899" />
+      </ProjectStructure>
+    </data>
+  </addData>
+</project>

@@ -1,0 +1,93 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Evaluates a math operation.
+// First both tokens are resolved to LREAL values and then the selected operation takes place.
+// In general, if any of the operands is a special LREAL value, then an error is returned.
+// For Division (/), division by zero yields into an error (depends on ParameterList setting).
+// For MODULO (%), both tokens are converted to LINT and the result is converted back to LREAL.
+// The return value will indicate a successful evaluation.
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuEvaluateMathOp : BOOL
+VAR_INPUT
+    typOp: typExpressionToken;
+    typToken1: typExpressionToken;
+    typToken2: typExpressionToken;
+    uiCursor: UINT;                  // Only for error message
+END_VAR
+VAR_IN_OUT
+    alrVariables: ARRAY [*] OF LREAL;
+    alrInternalVariables: ARRAY [*] OF LREAL;
+END_VAR
+VAR_OUTPUT
+    lrResult: LREAL;
+    sError: STRING;
+END_VAR
+{library PRIVATE}
+VAR
+    tempOperatorByte: BYTE;
+    tempNumber1: LREAL;
+    tempNumber2: LREAL;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF typOp.eType <> eTokenType.MATH_OP THEN
+    sError := Standard.CONCAT('Invalid math operation token at ', TO_STRING(uiCursor));
+    RETURN;
+END_IF
+
+// Change STRING identifier to BYTE (to match on FuTokenizeExpression strings)
+tempOperatorByte := typOp.sIdentifier[0];
+
+// Resolve first token to LREAL
+IF NOT FuEvaluateTokenSingle(typToken1, uiCursor, alrVariables, alrInternalVariables, lrResult => tempNumber1, sError => sError) THEN
+    FuEvaluateMathOp := FALSE;
+    RETURN;
+END_IF
+
+// Resolve second token to LREAL
+IF NOT FuEvaluateTokenSingle(typToken2, uiCursor, alrVariables, alrInternalVariables, lrResult => tempNumber2, sError => sError) THEN
+    FuEvaluateMathOp := FALSE;
+    RETURN;
+END_IF
+
+IF NOT FPU.IsLRealNumber(tempNumber1) THEN
+    FuEvaluateMathOp := FALSE;
+    sError := Standard.CONCAT('Special LREAL value is not valid: ', TO_STRING(tempNumber1));
+    RETURN;
+ELSIF NOT FPU.IsLRealNumber(tempNumber2) THEN
+    FuEvaluateMathOp := FALSE;
+    sError := Standard.CONCAT('Special LREAL value is not valid: ', TO_STRING(tempNumber2));
+    RETURN;
+END_IF
+
+IF tempOperatorByte = Constants.CHAR_ADD THEN
+    lrResult := tempNumber1 + tempNumber2;
+ELSIF tempOperatorByte = Constants.CHAR_SUB THEN
+    lrResult := tempNumber1 - tempNumber2;
+ELSIF tempOperatorByte = Constants.CHAR_MUL THEN
+    lrResult := tempNumber1 * tempNumber2;
+ELSIF tempOperatorByte = Constants.CHAR_DIV THEN
+    IF tempNumber2 = 0.0 THEN
+        CASE ParameterList.eDivisionByZero OF
+            eDivisionByZeroHandling.RESULT_IS_ZERO:
+                FuEvaluateMathOp := TRUE;
+                lrResult := 0.0;
+                RETURN;
+            
+            eDivisionByZeroHandling.DIVISOR_IS_ONE:
+                tempNumber2 := 1.0;
+        ELSE
+            sError := 'Division by zero is not allowed';
+            RETURN;
+        END_CASE
+    END_IF
+    
+    lrResult := tempNumber1 / tempNumber2;
+ELSIF tempOperatorByte = Constants.CHAR_MUL THEN
+    lrResult := EXPT(tempNumber1, tempNumber2);
+ELSIF tempOperatorByte = Constants.CHAR_MOD THEN
+    lrResult := LINT_TO_LREAL((LREAL_TO_LINT(tempNumber1) MOD LREAL_TO_LINT(tempNumber2)));
+ELSE
+    sError := Standard.CONCAT('Not a variable token at position ', TO_STRING(uiCursor));
+    RETURN;
+END_IF
+
+FuEvaluateMathOp := TRUE;

@@ -1,0 +1,21 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Checks whether the UTF-8 byte sequence is "well formed" (valid) for 3 byte length.
+{attribute 'qualified_only'}
+FUNCTION FuValidateUtf8BytesForLength3 : BOOL
+VAR_INPUT
+    bChar1: BYTE;
+    bChar2: BYTE;
+    bChar3: BYTE;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF bChar1 = 16#E0 THEN
+    FuValidateUtf8BytesForLength3 := (bChar2 >= 16#A0 AND_THEN bChar2 <= 16#BF AND_THEN bChar3 >= 16#80 AND_THEN bChar3 <= 16#BF);
+ELSIF bChar1 >= 16#E1 AND_THEN bChar1 <= 16#EC THEN
+    FuValidateUtf8BytesForLength3 := (bChar2 >= 16#80 AND_THEN bChar2 <= 16#BF AND_THEN bChar3 >= 16#80 AND_THEN bChar3 <= 16#BF);
+ELSIF bChar1 = 16#ED THEN
+    FuValidateUtf8BytesForLength3 := (bChar2 >= 16#80 AND_THEN bChar2 <= 16#9F AND_THEN bChar3 >= 16#80 AND_THEN bChar3 <= 16#BF);
+ELSIF bChar1 >= 16#EE AND_THEN bChar1 <= 16#EF THEN
+    FuValidateUtf8BytesForLength3 := (bChar2 >= 16#80 AND_THEN bChar2 <= 16#BF AND_THEN bChar3 >= 16#80 AND_THEN bChar3 <= 16#BF);
+ELSE
+    FuValidateUtf8BytesForLength3 := FALSE;
+END_IF

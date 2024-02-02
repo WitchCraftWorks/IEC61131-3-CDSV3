@@ -1,0 +1,54 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Calculates for a UTF-16 character from the given WSTRING the codepoint value as DWORD.
+// The return value signifies whether the conversion was successful and the codepoint is valid ("well formed").
+{attribute 'qualified_only'}
+FUNCTION FuUtf16CharToDword : BOOL
+VAR_INPUT
+    psInput: POINTER TO WSTRING(2);          // A pointer to the string - for technical reasons this is a WSTRING(2), although any length is supported
+    udiStringLength: UDINT;                  // The length of the string (in words (length in bytes/2), not codepoints)
+END_VAR
+VAR_OUTPUT
+    dwCodepoint: DWORD;                      // The codepoint value
+    usiWordLength: USINT(0..2);              // Provides the codepoint length in words
+END_VAR
+{library PRIVATE}
+VAR
+    tempChar1: WORD;
+    tempChar2: WORD;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+FuUtf16CharToDword := FALSE;
+dwCodepoint := 0;
+usiWordLength := 0;
+
+IF udiStringLength = 0 THEN
+    RETURN;
+END_IF
+
+tempChar1 := psInput^[0];
+
+IF tempChar1 >= 16#D800 AND_THEN tempChar1 <= 16#DBFF THEN
+    // Two word character
+    IF udiStringLength < 2 THEN
+        RETURN;
+    END_IF
+    
+    tempChar2 := psInput^[1];
+    
+    IF NOT FuValidateUtf16BytesForLength2(tempChar1, tempChar2) THEN
+        RETURN;
+    END_IF
+    
+    FuUtf16CharToDword := TRUE;
+    dwCodepoint := SHL(TO_DWORD(tempChar1), 10) + TO_DWORD(tempChar2) + TO_DWORD((16#10000 - SHL(16#D800, 10) - 16#DC00));
+    usiWordLength := 2;
+ELSIF (tempChar1 >= 0 AND_THEN tempChar1 <= 16#D7FF) OR_ELSE (tempChar1 >= 16#E000 AND_THEN tempChar1 <= 16#FFFF) THEN
+    // One word character
+    
+    FuUtf16CharToDword := TRUE;
+    dwCodepoint := TO_DWORD(tempChar1);
+    usiWordLength := 1;
+ELSE
+    // Invalid leader word value
+    RETURN;
+END_IF

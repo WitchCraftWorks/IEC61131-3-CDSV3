@@ -1,0 +1,113 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Compiles the pattern into a stream of tokens for matching.
+// The ISO 8859-1 latin alphabet can be matched case insensitive,
+// otherwise by default the pattern is case sensitive.
+//
+// A few examples of valid patterns:
+//  - 'A*bEd'
+//  - 'A*?bEd'
+//  - 'A.b*e*'
+//  - '*A\.b\*e*'
+//  - 'A?\bed'
+//
+// The return value signifies whether compilation was successful,
+// or the given pattern is invalid.
+{attribute 'qualified_only'}
+FUNCTION FuCompilePattern : BOOL
+VAR_INPUT
+    sPattern: STRING(255);              // The pattern string to compile
+    xCaseInsensitive: BOOL := FALSE;    // Whether the pattern is case insensitive (ISO 8859-1 latin1)
+END_VAR
+VAR_OUTPUT
+    typPattern: typCompiledPattern;     // The compiled pattern, for "FuMatchExpression"
+END_VAR
+{library PRIVATE}
+VAR
+    i: UINT;
+    
+    tempChar: BYTE;
+    tempNextChar: BYTE;
+    tempIndex: UINT;
+    
+    tempMaxStrIndex: UINT;
+END_VAR
+VAR CONSTANT
+    CHAR_WILDCARD: BYTE := 42; // *
+    CHAR_LAZINESS: BYTE := 63; // ?
+    CHAR_DOT: BYTE := 46; // .
+    CHAR_ESCAPE: BYTE := 92; // \
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+FuCompilePattern := FALSE;
+
+IF sPattern = '' THEN
+    RETURN;
+END_IF
+
+tempMaxStrIndex := TO_UINT(Standard.LEN(sPattern)) - 1;
+
+FOR i := 0 TO tempMaxStrIndex BY 1 DO
+    IF sPattern[i] = 0 OR_ELSE tempIndex > ParameterList.uiMaxPatternTokens THEN
+        EXIT;
+    END_IF
+    
+    tempChar := TO_BYTE(sPattern[i]);
+    
+    IF i < tempMaxStrIndex THEN
+        tempNextChar := TO_BYTE(sPattern[(i + 1)]);
+    ELSE
+        tempNextChar := 0;
+    END_IF
+    
+    IF tempChar = CHAR_WILDCARD THEN // Wildcard (*)
+        typPattern.atTokens[tempIndex].eType := eTokenType.WILDCARD;
+        typPattern.atTokens[tempIndex].bChar := 0; // Use bChar as modifier to be lazy
+    ELSIF
+        tempChar = CHAR_LAZINESS AND_THEN
+        tempIndex > 0 AND_THEN
+        typPattern.atTokens[(tempIndex - 1)].eType = eTokenType.WILDCARD
+    THEN // Laziness (?), but only if previously wildcard, otherwise literal
+        typPattern.atTokens[(tempIndex - 1)].bChar := 1;
+        CONTINUE;
+    ELSIF tempChar = CHAR_DOT THEN // Single char (.)
+        typPattern.atTokens[tempIndex].eType := eTokenType.ANYCHAR;
+    ELSIF
+        tempChar = CHAR_ESCAPE AND_THEN (
+            tempNextChar = CHAR_WILDCARD OR_ELSE
+            tempNextChar = CHAR_DOT
+        )
+    THEN // Backslash (escape token for . or *, if followed by . or *)
+        typPattern.atTokens[tempIndex].eType := eTokenType.LITERAL;
+        typPattern.atTokens[tempIndex].bChar := tempNextChar;
+        i := i + 1;
+    ELSE
+        typPattern.atTokens[tempIndex].eType := eTokenType.LITERAL;
+        typPattern.atTokens[tempIndex].bChar := tempChar;
+        
+        tempNextChar := 0;
+        IF xCaseInsensitive THEN
+            // Calculate for the ISO 8859-1 latin1 alphabet the uppercase or lowercase character number
+            IF tempChar >= 65 AND_THEN tempChar <= 90 THEN
+                // Uppercase A-Z
+                tempNextChar := tempChar + 32;
+            ELSIF tempChar >= 97 AND_THEN tempChar <= 122 THEN
+                // Lowercase a-z
+                tempNextChar := tempChar - 32;
+            ELSIF tempChar >= 192 AND_THEN tempChar <= 221 AND_THEN tempChar <> 215 THEN
+                // Uppercase ISO 8859-1
+                tempNextChar := tempChar + 32;
+            ELSIF tempChar >= 224 AND_THEN tempChar <= 253 AND_THEN tempChar <> 247 THEN
+                // Lowercase ISO 8859-1
+                tempNextChar := tempChar - 32; 
+            END_IF
+        END_IF
+        
+        typPattern.atTokens[tempIndex].bAlternativeChar := tempNextChar;
+    END_IF
+    
+    tempIndex := tempIndex + 1;
+    typPattern.uiCountTokens := tempIndex;
+END_FOR
+
+FuCompilePattern := (tempIndex > 0);
+typPattern.xCaseInsensitive := xCaseInsensitive;

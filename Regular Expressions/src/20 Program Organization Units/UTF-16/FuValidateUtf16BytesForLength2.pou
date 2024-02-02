@@ -1,0 +1,10 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Checks whether the UTF-16 byte sequence is "well formed" (valid) for 2 word length.
+{attribute 'qualified_only'}
+FUNCTION FuValidateUtf16BytesForLength2 : BOOL
+VAR_INPUT
+    wChar1: WORD;
+    wChar2: WORD;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+FuValidateUtf16BytesForLength2 := (wChar1 >= 16#D800 AND_THEN wChar1 <= 16#DBFF AND_THEN wChar2 >= 16#DC00 AND_THEN wChar2 <= 16#DFFF);

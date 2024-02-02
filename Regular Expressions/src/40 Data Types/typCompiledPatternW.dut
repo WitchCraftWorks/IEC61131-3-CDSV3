@@ -1,0 +1,8 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+TYPE typCompiledPatternW :
+STRUCT
+    xCaseInsensitive: BOOL;
+    atTokens: ARRAY [0..ParameterList.uiMaxPatternTokens] OF typPatternTokenW;
+    uiCountTokens: UINT;
+END_STRUCT
+END_TYPE

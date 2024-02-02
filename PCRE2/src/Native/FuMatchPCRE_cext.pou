@@ -1,0 +1,15 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuMatchPCRE_cext : INT
+VAR_INPUT
+    re: __XWORD;
+    psSubject: POINTER TO STRING(1);
+    udiLength: UDINT;
+    udiOffset: UDINT;
+    udiOptions: UDINT;
+END_VAR
+VAR_OUTPUT
+    mb: __XWORD;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+; // Nothing to do in simulation mode

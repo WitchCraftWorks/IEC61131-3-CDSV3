@@ -1,0 +1,23 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Get the match substring length designated with the given match name.
+// The return value designes whether we have a match with that name and it was successfully fetched.
+{attribute 'qualified_only'}
+FUNCTION FuGetNamedMatchSubstringLengthPCRE : BOOL
+VAR_INPUT
+    mb: __XWORD;                        // Pointer to the match block from FuMatchPCRE
+    sMatchName: STRING(255);            // The name of the match
+END_VAR
+VAR_OUTPUT
+    udiLength: UDINT;                   // The length of the match substring
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF mb = 0 OR_ELSE sMatchName = '' THEN
+    RETURN;
+END_IF
+
+FuGetNamedMatchSubstringLengthPCRE := FuGetNamedMatchSubstringLengthPCRE_cext(
+    mb,
+    sMatchName,
+    TO_UDINT(MAX(0, Stu.StrLenA(ADR(sMatchName)))),
+    udiLength => udiLength
+);

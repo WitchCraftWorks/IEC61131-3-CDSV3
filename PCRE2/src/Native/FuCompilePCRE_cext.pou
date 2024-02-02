@@ -1,0 +1,10 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuCompilePCRE_cext : __XWORD
+VAR_INPUT
+    psPattern: POINTER TO STRING(1);
+    udiLength: UDINT;
+    udiOptions: UDINT;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+; // Nothing to do in simulation mode

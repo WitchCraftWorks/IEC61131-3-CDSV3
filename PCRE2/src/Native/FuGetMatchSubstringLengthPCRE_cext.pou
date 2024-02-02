@@ -1,0 +1,12 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuGetMatchSubstringLengthPCRE_cext : BOOL
+VAR_INPUT
+    mb: __XWORD;
+    uiMatchIndex: UINT;
+END_VAR
+VAR_OUTPUT
+    udiLength: UDINT;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+; // Nothing to do in simulation mode

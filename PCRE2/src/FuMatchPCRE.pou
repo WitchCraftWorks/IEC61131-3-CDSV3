@@ -1,0 +1,25 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Matches the subject string against the subject string.
+// The return value contains the number of matches. A negative number indicates an error from PCRE2.
+//
+// The output contains a pointer to the match block, which is needed for FuGetMatchPCRE and FuGetNamedMatchPCRE.
+// After use, you need to release the match block using FuFreeMatchPCRE.
+// You MUST make sure you DO NOT free compiled patterns BEFORE you release the match block.
+{attribute 'qualified_only'}
+FUNCTION FuMatchPCRE : INT
+VAR_INPUT
+    re: __XWORD;                        // Pointer to the compiled pattern from FuCompilePCRE
+    psSubject: POINTER TO STRING(1);    // The subject to match on - for technical reasons, this is STRING(1), although any string length is supported
+    udiLength: UDINT;                   // The length of the string
+    udiOffset: UDINT := 0;              // Offset at the start of the subject string for matching
+    udiOptions: UDINT := 0;             // Any valid pcre2_match() options (see eMatchOptions, these can be combined with OR)
+END_VAR
+VAR_OUTPUT
+    mb: __XWORD;                        // The pointer to the match block
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF re = 0 OR_ELSE psSubject = 0 THEN
+    RETURN;
+END_IF
+
+FuMatchPCRE := FuMatchPCRE_cext(re, psSubject, udiLength, udiOffset, udiOptions, mb => mb);

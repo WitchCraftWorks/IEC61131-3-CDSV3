@@ -1,0 +1,32 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Returns the match substring designated with the given match name.
+// The return value designes whether we have a match with that name and it was successfully fetched.
+// This function will also return FALSE, if the match string is not large enough to contain the whole match.
+{attribute 'qualified_only'}
+FUNCTION FuGetNamedMatchPCRE : BOOL
+VAR_INPUT
+    mb: __XWORD;                        // Pointer to the match block from FuMatchPCRE
+    psSubject: POINTER TO STRING(1);    // The subject to match on - for technical reasons, this is STRING(1), although any string length is supported
+    udiSubjectLength: UDINT;            // The length of the subject string
+    sMatchName: STRING(255);            // The name of the match
+    psMatch: POINTER TO STRING(1);      // The string to put the match in - for technical reasons, this is STRING(1), although any string length is supported
+    udiSize: UDINT;                     // The size (maximum length) of the match string (psMatch)
+END_VAR
+VAR_OUTPUT
+    udiLength: UDINT;                   // The actual length of the match substring
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF mb = 0 OR_ELSE psSubject = 0 OR_ELSE udiSubjectLength = 0 OR_ELSE sMatchName = '' OR_ELSE psMatch = 0 OR_ELSE udiSize = 0 THEN
+    RETURN;
+END_IF
+
+FuGetNamedMatchPCRE := FuGetNamedMatchPCRE_cext(
+    mb,
+    psSubject,
+    udiSubjectLength,
+    sMatchName,
+    TO_UDINT(MAX(0, Stu.StrLenA(ADR(sMatchName)))),
+    psMatch,
+    udiSize,
+    udiLength => udiLength
+);

@@ -1,0 +1,8 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuFreePCRE_cext
+VAR_INPUT
+    re: __XWORD;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+; // Nothing to do in simulation mode

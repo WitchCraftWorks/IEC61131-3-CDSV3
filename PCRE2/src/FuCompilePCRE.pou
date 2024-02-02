@@ -1,0 +1,20 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Compiles the given pattern into a PCRE compiled pattern.
+// Before use, the pattern must be compiled first.
+// After use, the compiled pattern MUST be freed.
+// The return value is a pointer to the compiled pattern and
+// should be given to the other functions as input "re".
+// If compilation fails, the return value is 0.
+{attribute 'qualified_only'}
+FUNCTION FuCompilePCRE : __XWORD
+VAR_INPUT
+    psPattern: POINTER TO STRING(1);    // The pattern to compile - for technical reasons, this is STRING(1), although any string length is supported
+    udiLength: UDINT;                   // The length of the string
+    udiOptions: UDINT;                  // Any compile options to be passed to pcre2_compile() (see eCompileOptions, these can be combined with OR)
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF psPattern = 0 THEN
+    RETURN;
+END_IF
+
+FuCompilePCRE := FuCompilePCRE_cext(psPattern, udiLength, udiOptions);

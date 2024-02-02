@@ -1,0 +1,17 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Frees the PCRE compiled pattern.
+// This function MUST be called in order to free the underlying resources,
+// after you don't need this anymore.
+// To prevent memory leaks, you need to free compiled patterns after use.
+// You MUST make sure you DO NOT free compiled patterns BEFORE you release any match blocks for the same pattern.
+{attribute 'qualified_only'}
+FUNCTION FuFreePCRE
+VAR_INPUT
+    re: __XWORD;    // Pointer to the compiled pattern from FuCompilePCRE
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF re = 0 THEN
+    RETURN;
+END_IF
+
+FuFreePCRE_cext(re);

@@ -1,0 +1,25 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// PCRE2 match options.
+// These can be combined using bitwise OR operations.
+// See also: https://pcre2project.github.io/pcre2/doc/html/pcre2_match.html
+{attribute 'qualified_only'}
+TYPE eMatchOptions :
+(
+	PCRE2_NOTBOL := 16#00000001,
+    PCRE2_NOTEOL := 16#00000002,
+    PCRE2_NOTEMPTY := 16#00000004,
+    PCRE2_NOTEMPTY_ATSTART := 16#00000008,
+    PCRE2_PARTIAL_SOFT := 16#00000010,
+    PCRE2_PARTIAL_HARD := 16#00000020,
+    PCRE2_SUBSTITUTE_GLOBAL := 16#00000100, // pcre2_substitute() only
+    PCRE2_SUBSTITUTE_EXTENDED := 16#00000200, // pcre2_substitute() only
+    PCRE2_SUBSTITUTE_UNSET_EMPTY := 16#00000400, // pcre2_substitute() only
+    PCRE2_SUBSTITUTE_UNKNOWN_UNSET := 16#00000800, // pcre2_substitute() only
+    PCRE2_SUBSTITUTE_OVERFLOW_LENGTH := 16#00001000, // pcre2_substitute() only
+    PCRE2_NO_JIT := 16#00002000,
+    PCRE2_COPY_MATCHED_SUBJECT := 16#00004000,
+    PCRE2_SUBSTITUTE_LITERAL := 16#00008000, // pcre2_substitute() only
+    PCRE2_SUBSTITUTE_MATCHED := 16#00010000, // pcre2_substitute() only
+    PCRE2_SUBSTITUTE_REPLACEMENT_ONLY := 16#00020000 // pcre2_substitute() only
+) UDINT;
+END_TYPE

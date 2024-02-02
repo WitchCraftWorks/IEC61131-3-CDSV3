@@ -1,0 +1,14 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Releases the match block from FuMatchPCRE.
+// To prevent memory leaks, you need to free match blocks after use.
+{attribute 'qualified_only'}
+FUNCTION FuFreeMatchPCRE
+VAR_INPUT
+    mb: __XWORD;    // Pointer to the match block from FuMatchPCRE
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF mb = 0 THEN
+    RETURN;
+END_IF
+
+FuFreeMatchPCRE_cext(mb);

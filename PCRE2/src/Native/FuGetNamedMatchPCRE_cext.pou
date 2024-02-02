@@ -1,0 +1,17 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+{attribute 'qualified_only'}
+FUNCTION INTERNAL FuGetNamedMatchPCRE_cext : BOOL
+VAR_INPUT
+    mb: __XWORD;
+    psSubject: POINTER TO STRING(1);
+    udiSubjectLength: UDINT;
+    sMatchName: STRING(255);
+    udiMatchIndexLength: UDINT;
+    psMatch: POINTER TO STRING(1);
+    udiSize: UDINT;
+END_VAR
+VAR_OUTPUT
+    udiLength: UDINT;
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+; // Nothing to do in simulation mode

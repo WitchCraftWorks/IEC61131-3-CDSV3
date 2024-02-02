@@ -1,0 +1,24 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Returns the match substring designated at the index.
+// The return value designes whether we have a match at the index and it was successfully fetched.
+// This function will also return partial match strings,
+// if the match string is not large enough to contain the whole string.
+{attribute 'qualified_only'}
+FUNCTION FuGetMatchPCRE : BOOL
+VAR_INPUT
+    mb: __XWORD;                        // Pointer to the match block from FuMatchPCRE
+    psSubject: POINTER TO STRING(1);    // The subject to match on - for technical reasons, this is STRING(1), although any string length is supported
+    udiSubjectLength: UDINT;            // The length of the subject string
+    uiMatchIndex: UINT;                 // The index of the match (maximum one less than the amount of matches)
+    psMatch: POINTER TO STRING(1);      // The string to put the match in - for technical reasons, this is STRING(1), although any string length is supported
+    udiSize: UDINT;                     // The size (maximum length) of the match string (psMatch)
+END_VAR
+VAR_OUTPUT
+    udiLength: UDINT;                   // The actual length of the match substring
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF mb = 0 OR_ELSE psSubject = 0 OR_ELSE udiSubjectLength = 0 OR_ELSE psMatch = 0 OR_ELSE udiSize = 0 THEN
+    RETURN;
+END_IF
+
+FuGetMatchPCRE := FuGetMatchPCRE_cext(mb, psSubject, udiSubjectLength, uiMatchIndex, psMatch, udiSize, udiLength => udiLength);

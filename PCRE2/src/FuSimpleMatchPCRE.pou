@@ -1,0 +1,17 @@
+(*#-#-#-#-#-#-#-#-#-#---Declaration---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+// Simply checks whether the PCRE compiled pattern matches the string.
+{attribute 'qualified_only'}
+FUNCTION FuSimpleMatchPCRE : BOOL
+VAR_INPUT
+    re: __XWORD;                        // Pointer to the compiled pattern from FuCompilePCRE
+    psSubject: POINTER TO STRING(1);    // The subject to match on - for technical reasons, this is STRING(1), although any string length is supported
+    udiLength: UDINT;                   // The length of the string
+    udiOffset: UDINT := 0;              // Offset at the start of the subject string for matching
+    udiOptions: UDINT := 0;             // Any valid pcre2_match() options (see eMatchOptions, these can be combined with OR)
+END_VAR
+(*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
+IF re = 0 OR_ELSE psSubject = 0 THEN
+    RETURN;
+END_IF
+
+FuSimpleMatchPCRE := FuSimpleMatchPCRE_cext(re, psSubject, udiLength, udiOffset, udiOptions);

@@ -56,15 +56,16 @@ IF xTrigger THEN
     IF staticUsedExpression <> sExpression THEN
         staticUsedExpression := '';
         
-        tempSuccess := FuTokenizeExpression(sExpression, typExpression => tempTokenizedExpression);
+        tempSuccess := FuTokenizeExpression(sExpression, typExpression => tempTokenizedExpression, sError => sError);
         IF NOT tempSuccess THEN
             xTrigger := FALSE;
             xDone := TRUE;
             xError := TRUE;
-            sError := 'Error during tokenize';
             lrResult := 0.0;
             RETURN;
         END_IF
+        
+        sError := '';
         
         tempSuccess := FuStepizeExpression(tempTokenizedExpression, typSteps => staticSteppedExpression);
         IF NOT tempSuccess THEN

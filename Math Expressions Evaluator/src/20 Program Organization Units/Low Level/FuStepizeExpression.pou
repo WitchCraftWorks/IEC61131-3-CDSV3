@@ -6,6 +6,10 @@
 // Group operations include function calls and expressions inside ().
 // Operations such as "1 + 5 - 2" are not split up and
 // are evaluated left to right from the evaluator.
+//
+// The return value signifies whether the operation has been successfully completed. 
+// This function should only return false, when we run out of internal variables
+// or there are no tokens.
 {attribute 'qualified_only'}
 FUNCTION FuStepizeExpression : BOOL
 VAR_INPUT

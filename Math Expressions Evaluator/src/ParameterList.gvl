@@ -2,7 +2,7 @@
 {attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
     uiMaxExpressionTokens: UINT := 63;                                                  // The maximum amount of tokens to support parsing (compiling) - the counting starts from 0, so add 1 to the number in your mind
-    uiMaxInternalVars: UINT := 15;                                                      // The maximum amount of internal variables per expression
+    uiMaxInternalVars: UINT := 16;                                                      // The maximum amount of internal variables per expression
     uiMaxStepsPerOperation: UINT := 15;                                                 // The maximum amount of steps per operation - the counting starts from 0, so add 1 to the number in your mind
     
     eDivisionByZero: eDivisionByZeroHandling := eDivisionByZeroHandling.ERROR;          // Describes how a division by zero situation is to be handled

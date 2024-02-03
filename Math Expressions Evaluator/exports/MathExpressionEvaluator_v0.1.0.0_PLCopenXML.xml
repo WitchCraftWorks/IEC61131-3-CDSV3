@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 5" creationDateTime="2024-02-02T21:42:38.0162335" />
-  <contentHeader name="Math Expression Evaluator" version="0.1.0.0" modificationDateTime="2024-02-02T18:51:06.5825805" organization="GG">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 5" creationDateTime="2024-02-03T09:47:36.8216988" />
+  <contentHeader name="Math Expression Evaluator" version="0.1.0.0" modificationDateTime="2024-02-03T09:43:29.7262259" organization="GG">
     <Comment>The Math Expression Evaluator evaluates math expressions (terms).
 
 See the documentation folder for an introduction (the folder itself).</Comment>
@@ -1007,6 +1007,16 @@ END_CASE
                 <UINT />
               </type>
             </variable>
+            <variable name="tempResult">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="tempError">
+              <type>
+                <string />
+              </type>
+            </variable>
           </localVars>
           <addData>
             <data name="http://www.3s-software.com/plcopenxml/attributes" handleUnknown="implementation">
@@ -1039,14 +1049,16 @@ FOR i := 0 TO tempMaxCursor BY 1 DO
     IF i &gt; 0 AND_THEN typStep.atTokens[i].eType = eTokenType.MATH_OP THEN
         i := i - 1;
         typStep.atTokens[i].eType := eTokenType.NUMBER;
-        typStep.atTokens[i].lrValue := lrResult;
+        typStep.atTokens[i].lrValue := tempResult;
     END_IF
     
-    IF NOT FuEvaluateOperation(tempMaxCursor, typStep.atTokens, i, alrVariables, alrInternalVariables, lrResult =&gt; lrResult, sError =&gt; sError) THEN
+    IF NOT FuEvaluateOperation(tempMaxCursor, typStep.atTokens, i, alrVariables, alrInternalVariables, lrResult =&gt; tempResult, sError =&gt; tempError) THEN
+        sError := tempError;
         RETURN;
     END_IF
 END_FOR
 
+lrResult := tempResult;
 FuEvaluateStep := TRUE;
 </xhtml>
           </ST>
@@ -1637,15 +1649,16 @@ FuInsertSortStepizeGroupFound := TRUE;
     IF staticUsedExpression &lt;&gt; sExpression THEN
         staticUsedExpression := '';
         
-        tempSuccess := FuTokenizeExpression(sExpression, typExpression =&gt; tempTokenizedExpression);
+        tempSuccess := FuTokenizeExpression(sExpression, typExpression =&gt; tempTokenizedExpression, sError =&gt; sError);
         IF NOT tempSuccess THEN
             xTrigger := FALSE;
             xDone := TRUE;
             xError := TRUE;
-            sError := 'Error during tokenize';
             lrResult := 0.0;
             RETURN;
         END_IF
+        
+        sError := '';
         
         tempSuccess := FuStepizeExpression(tempTokenizedExpression, typSteps =&gt; staticSteppedExpression);
         IF NOT tempSuccess THEN
@@ -1733,7 +1746,7 @@ xDone := FALSE;
                 <string />
               </type>
               <documentation>
-                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Error message (may also contain nonsense if function returns TRUE)</xhtml>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Error message</xhtml>
               </documentation>
             </variable>
           </outputVars>
@@ -1743,10 +1756,20 @@ xDone := FALSE;
                 <UINT />
               </type>
             </variable>
+            <variable name="tempResult">
+              <type>
+                <LREAL />
+              </type>
+            </variable>
+            <variable name="tempError">
+              <type>
+                <string />
+              </type>
+            </variable>
             <variable name="tempInternalVariables">
               <type>
                 <array>
-                  <dimension lower="1" upper="ParameterList.uiMaxInternalVars" />
+                  <dimension lower="0" upper="ParameterList.uiMaxInternalVars" />
                   <baseType>
                     <LREAL />
                   </baseType>
@@ -1781,19 +1804,24 @@ xDone := FALSE;
 END_IF
 
 FOR i := 0 TO (typExpressionSteps.uiCountSteps - 1) BY 1 DO
-    IF NOT FuEvaluateStep(typExpressionSteps.atSteps[i],  alrVariables, tempInternalVariables, lrResult =&gt; lrResult, sError =&gt; sError) THEN
+    IF NOT FuEvaluateStep(typExpressionSteps.atSteps[i],  alrVariables, tempInternalVariables, lrResult =&gt; tempResult, sError =&gt; tempError) THEN
+        sError := tempError;
         RETURN;
     END_IF
+    
+    // Always have the result in internal variable 0
+    tempInternalVariables[0] := tempResult;
     
     IF
         typExpressionSteps.atSteps[i].uiInternalVariableTarget &gt; 0 AND_THEN
         typExpressionSteps.atSteps[i].uiInternalVariableTarget &gt;= 1 AND_THEN
         typExpressionSteps.atSteps[i].uiInternalVariableTarget &lt;= ParameterList.uiMaxInternalVars
     THEN
-        tempInternalVariables[typExpressionSteps.atSteps[i].uiInternalVariableTarget] := lrResult;
+        tempInternalVariables[typExpressionSteps.atSteps[i].uiInternalVariableTarget] := tempResult;
     END_IF
 END_FOR
 
+lrResult := tempResult;
 FuEvaluateExpression := TRUE;
 </xhtml>
           </ST>
@@ -1940,7 +1968,11 @@ FuEvaluateExpression := TRUE;
 
  Group operations include function calls and expressions inside ().
  Operations such as "1 + 5 - 2" are not split up and
- are evaluated left to right from the evaluator.</xhtml>
+ are evaluated left to right from the evaluator.
+
+ The return value signifies whether the operation has been successfully completed. 
+ This function should only return false, when we run out of internal variables
+ or there are no tokens.</xhtml>
           </documentation>
         </interface>
         <body>
@@ -2099,6 +2131,14 @@ FuStepizeExpression := TRUE;
                 <xhtml xmlns="http://www.w3.org/1999/xhtml"> The tokenized expression</xhtml>
               </documentation>
             </variable>
+            <variable name="sError">
+              <type>
+                <string />
+              </type>
+              <documentation>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml"> Error message</xhtml>
+              </documentation>
+            </variable>
           </outputVars>
           <localVars>
             <variable name="i">
@@ -2220,8 +2260,11 @@ FuStepizeExpression := TRUE;
         <body>
           <ST>
             <xhtml xmlns="http://www.w3.org/1999/xhtml">IF sExpression = '' THEN
+    sError := 'Empty expression';
     RETURN;
 END_IF
+
+sError := '';
 
 // Assert a clean string (CODESYS does not assert that the whole string contains NUL bytes, only sets the first byte as NUL byte!)
 // tempValueStr is VAR_TEMP and should get completely initialized as an empty string (all bytes = NUL), but the truth is the memory space
@@ -2232,7 +2275,10 @@ FOR i := 0 TO SIZEOF(tempValueStr) BY 1 DO
 END_FOR
 
 FOR i := 0 TO 255 BY 1 DO
-    IF sExpression[i] = 0 OR_ELSE tempIndex &gt; ParameterList.uiMaxExpressionTokens THEN
+    IF sExpression[i] = 0 THEN
+        EXIT;
+    ELSIF tempIndex &gt; ParameterList.uiMaxExpressionTokens THEN
+        sError := 'Too many expressions';
         EXIT;
     END_IF
     
@@ -2261,6 +2307,7 @@ FOR i := 0 TO 255 BY 1 DO
         
         Constants.CHAR_VARIABLE:
             IF tempVarOpen OR_ELSE tempNumOpen THEN
+                sError := Standard.CONCAT('Unexpected VARIABLE "\" start at token ', TO_STRING(i));
                 RETURN;
             END_IF
             
@@ -2279,25 +2326,13 @@ FOR i := 0 TO 255 BY 1 DO
         Constants.CHAR_GROUP_END:
             tempFunEndDetected := (tempFunOpen AND_THEN tempGroupNum = typExpression.atTokens[tempFunIndex].uiGroupNumber);
             
-            IF tempVarOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
-                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
-                
-                tempValueStr := '';
-                tempVarOpen := FALSE;
-                
-                tempIndex := tempIndex + 1;
-                typExpression.uiCountTokens := tempIndex;
-                
-                IF tempFunEndDetected THEN
-                    tempFunArgsCount := tempFunArgsCount + 1;
-                END_IF
-            ELSIF tempNumOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+            IF tempNumOpen OR_ELSE tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);
                 typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
                 
                 tempValueStr := '';
                 tempNumOpen := FALSE;
+                tempVarOpen := FALSE;
                 
                 tempIndex := tempIndex + 1;
                 typExpression.uiCountTokens := tempIndex;
@@ -2316,13 +2351,25 @@ FOR i := 0 TO 255 BY 1 DO
                 // or for fixed args functions, we have that many arguments as currently stored
                 IF typExpression.atTokens[tempFunIndex].xArgsVariable THEN
                     IF typExpression.atTokens[tempFunIndex].uiArgsCount &gt; tempFunArgsCount THEN
+                        sError := Standard.CONCAT('Not enough arguments for variable function ', typExpression.atTokens[tempFunIndex].sIdentifier);
+                        sError := Standard.CONCAT(sError, ', expected: ');
+                        sError := Standard.CONCAT(sError, TO_STRING(typExpression.atTokens[tempFunIndex].uiArgsCount));
+                        sError := Standard.CONCAT(sError, ', got: ');
+                        sError := Standard.CONCAT(sError, TO_STRING(tempFunArgsCount));
                         RETURN;
                     END_IF
                 ELSIF typExpression.atTokens[tempFunIndex].uiArgsCount &lt;&gt; tempFunArgsCount THEN
+                    sError := Standard.CONCAT('Mismatch arguments count for function ', typExpression.atTokens[tempFunIndex].sIdentifier);
+                    sError := Standard.CONCAT(sError, ', expected: ');
+                    sError := Standard.CONCAT(sError, TO_STRING(typExpression.atTokens[tempFunIndex].uiArgsCount));
+                    sError := Standard.CONCAT(sError, ', got: ');
+                    sError := Standard.CONCAT(sError, TO_STRING(tempFunArgsCount));
                     RETURN;
                 END_IF
                 
                 IF tempFunArgsCount &gt; Constants.MAX_FUN_ARGS THEN
+                    sError := Standard.CONCAT('Too many function arguments (more than ', TO_STRING(Constants.MAX_FUN_ARGS));
+                    sError := Standard.CONCAT(sError, ')');
                     RETURN;
                 END_IF
                 
@@ -2336,22 +2383,15 @@ FOR i := 0 TO 255 BY 1 DO
         
         Constants.CHAR_COMMA:
             IF NOT tempFunOpen THEN
+                sError := Standard.CONCAT('Unexpected COMMA "," outside of function at token ', TO_STRING(i));
                 RETURN;
-            ELSIF tempVarOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
-                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
-                
-                tempValueStr := '';
-                tempVarOpen := FALSE;
-                
-                tempIndex := tempIndex + 1;
-                typExpression.uiCountTokens := tempIndex;
-            ELSIF tempNumOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+            ELSIF tempNumOpen OR_ELSE tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);
                 typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
                 
                 tempValueStr := '';
                 tempNumOpen := FALSE;
+                tempVarOpen := FALSE;
                 
                 tempIndex := tempIndex + 1;
                 typExpression.uiCountTokens := tempIndex;
@@ -2362,6 +2402,7 @@ FOR i := 0 TO 255 BY 1 DO
         
         Constants.CHAR_DOT:
             IF NOT tempNumOpen THEN
+                sError := Standard.CONCAT('Unexpected DOT "." outside of number at token ', TO_STRING(i));
                 RETURN;
             END_IF
             
@@ -2371,24 +2412,20 @@ FOR i := 0 TO 255 BY 1 DO
         // "-" must be handled differently, as we may need to handle it as a sign
        Constants. CHAR_ADD, Constants.CHAR_SUB, Constants.CHAR_MUL,
         Constants.CHAR_DIV, Constants.CHAR_EXP, Constants.CHAR_MOD:
-            IF tempVarOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
-                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
-                
-                tempValueStr := '';
-                tempVarOpen := FALSE;
-                
-                tempIndex := tempIndex + 1;
-                typExpression.uiCountTokens := tempIndex;
-            ELSIF tempNumOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+            IF tempNumOpen OR_ELSE tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);
                 typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
                 
                 tempValueStr := '';
                 tempNumOpen := FALSE;
+                tempVarOpen := FALSE;
                 
                 tempIndex := tempIndex + 1;
                 typExpression.uiCountTokens := tempIndex;
+                
+                IF tempFunEndDetected THEN
+                    tempFunArgsCount := tempFunArgsCount + 1;
+                END_IF
             END_IF
             
             // If operator is ADD/SUB, then peek ahead to see if a number follows immediately (it's a negative number and not an operation)
@@ -2418,6 +2455,7 @@ FOR i := 0 TO 255 BY 1 DO
         ELSIF tempChar &gt;= Constants.ASCII_ALPHA_START AND_THEN tempChar &lt;= Constants.ASCII_ALPHA_END THEN
             // We can not call a function inside a function
             IF tempFunOpen THEN
+                sError := Standard.CONCAT('Nested function calls are not supported, found at token ', TO_STRING(i));
                 RETURN;
             END_IF
             
@@ -2473,12 +2511,14 @@ FOR i := 0 TO 255 BY 1 DO
                 typExpression.atTokens[tempIndex].xArgsVariable := TRUE;
             ELSE
                 // Invalid function name
+                sError := Standard.CONCAT('Unknown function ', tempIdentifierStr);
                 RETURN;
             END_IF
             
             // Peek at the next expression token and check if it's a GROUP_START token
             IF sExpression[(i + 1)] &lt;&gt; Constants.CHAR_GROUP_START THEN
                 // If not, invalid expression
+                sError := Standard.CONCAT('Expected GROUP_START "(" for function call at token ', TO_STRING((i + 1)));
                 RETURN;
             END_IF
             
@@ -2496,6 +2536,7 @@ FOR i := 0 TO 255 BY 1 DO
             tempFunArgsCount := 0;
         ELSE
             // Invalid expression
+            sError := Standard.CONCAT('Invalid character at token ', TO_STRING(i));
             RETURN;
         END_IF
     END_CASE
@@ -2946,7 +2987,7 @@ FuTokenizeExpression := (tempIndex &gt; 0 AND_THEN NOT tempVarOpen AND_THEN temp
             <UINT />
           </type>
           <initialValue>
-            <simpleValue value="15" />
+            <simpleValue value="16" />
           </initialValue>
           <documentation>
             <xhtml xmlns="http://www.w3.org/1999/xhtml"> The maximum amount of internal variables per expression</xhtml>

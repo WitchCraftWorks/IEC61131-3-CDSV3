@@ -368,7 +368,7 @@
         <Array Name="EmbeddedTypeGuids" Type="System.Guid">
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638420499933429752</Single>
+        <Single Name="Timestamp" Type="long">638425493449778215</Single>
       </Single>
       <Single Name="Object" Type="{ffbfa93a-b94d-45fc-a329-229860183b1d}" Method="IArchivable">
         <Single Name="Interface" Type="{a9ed5b7e-75c5-4651-af16-d2c27e98cb94}" Method="IArchivable">
@@ -392,7 +392,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">46</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">    uiMaxInternalVars: UINT := 15;                                                      // The maximum amount of internal variables per expression</Single>
+                <Single Name="Text" Type="string">    uiMaxInternalVars: UINT := 16;                                                      // The maximum amount of internal variables per expression</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">40</Single>
@@ -699,7 +699,7 @@
         <Array Name="EmbeddedTypeGuids" Type="System.Guid">
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638420349637425654</Single>
+        <Single Name="Timestamp" Type="long">638425083420482803</Single>
       </Single>
       <Single Name="Object" Type="{2db5746d-d284-4425-9f7f-2663a34b0ebc}" Method="IArchivable">
         <Single Name="Interface" Type="{a9ed5b7e-75c5-4651-af16-d2c27e98cb94}" Method="IArchivable">
@@ -728,7 +728,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">6</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">	INVALID := 0,</Single>
+                <Single Name="Text" Type="string">    INVALID := 0,</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">9</Single>
@@ -1034,7 +1034,7 @@
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
           <Single Type="System.Guid">3b83b776-fb25-43b8-99f2-3c507c9143fc</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638424960103229821</Single>
+        <Single Name="Timestamp" Type="long">638425501710750457</Single>
       </Single>
       <Single Name="Object" Type="{6f9dac99-8de1-4efc-8465-68ac443b7d08}" Method="IArchivable">
         <Single Name="SpecialFunc" Type="{0db3d7bb-cde0-4416-9a7b-ce49a0124323}">None</Single>
@@ -1109,7 +1109,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">39</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">        tempSuccess := FuTokenizeExpression(sExpression, typExpression =&gt; tempTokenizedExpression);</Single>
+                <Single Name="Text" Type="string">        tempSuccess := FuTokenizeExpression(sExpression, typExpression =&gt; tempTokenizedExpression, sError =&gt; sError);</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">52</Single>
@@ -1132,11 +1132,6 @@
                 <Single Name="Text" Type="string">            xError := TRUE;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">71</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">            sError := 'Error during tokenize';</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">72</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">            lrResult := 0.0;</Single>
@@ -1150,6 +1145,16 @@
                 <Single Name="Id" Type="long">54</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">        END_IF</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">109</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">        </Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">110</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">        sError := '';</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">61</Single>
@@ -1525,7 +1530,7 @@
             </Array>
           </Single>
         </Single>
-        <Single Name="UniqueIdGenerator" Type="string">108</Single>
+        <Single Name="UniqueIdGenerator" Type="string">110</Single>
         <Single Name="POULevel" Type="{8e575c5b-1d37-49c6-941b-5c0ec7874787}">Standard</Single>
         <List Name="ChildObjectGuids" Type="System.Collections.ArrayList" />
         <Single Name="AddAttributeSubsequent" Type="bool">False</Single>
@@ -1569,7 +1574,7 @@
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
           <Single Type="System.Guid">3b83b776-fb25-43b8-99f2-3c507c9143fc</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638424952391780638</Single>
+        <Single Name="Timestamp" Type="long">638425491239324413</Single>
       </Single>
       <Single Name="Object" Type="{6f9dac99-8de1-4efc-8465-68ac443b7d08}" Method="IArchivable">
         <Single Name="SpecialFunc" Type="{0db3d7bb-cde0-4416-9a7b-ce49a0124323}">None</Single>
@@ -1609,7 +1614,12 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">36</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">    IF NOT FuEvaluateStep(typExpressionSteps.atSteps[i],  alrVariables, tempInternalVariables, lrResult =&gt; lrResult, sError =&gt; sError) THEN</Single>
+                <Single Name="Text" Type="string">    IF NOT FuEvaluateStep(typExpressionSteps.atSteps[i],  alrVariables, tempInternalVariables, lrResult =&gt; tempResult, sError =&gt; tempError) THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">56</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">        sError := tempError;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">39</Single>
@@ -1620,6 +1630,21 @@
                 <Single Name="Id" Type="long">40</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">    END_IF</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">57</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    </Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">61</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    // Always have the result in internal variable 0</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">59</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    tempInternalVariables[0] := tempResult;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">44</Single>
@@ -1654,7 +1679,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">46</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">        tempInternalVariables[typExpressionSteps.atSteps[i].uiInternalVariableTarget] := lrResult;</Single>
+                <Single Name="Text" Type="string">        tempInternalVariables[typExpressionSteps.atSteps[i].uiInternalVariableTarget] := tempResult;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">47</Single>
@@ -1667,9 +1692,14 @@
                 <Single Name="Text" Type="string">END_FOR</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">42</Single>
+                <Single Name="Id" Type="long">60</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string"></Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">42</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">lrResult := tempResult;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">41</Single>
@@ -1775,7 +1805,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">26</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">    sError: STRING;                                    // Error message (may also contain nonsense if function returns TRUE)</Single>
+                <Single Name="Text" Type="string">    sError: STRING;                                    // Error message</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">21</Single>
@@ -1793,9 +1823,19 @@
                 <Single Name="Text" Type="string">VAR</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">29</Single>
+                <Single Name="Id" Type="long">54</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">    i: UINT;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">55</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    tempResult: LREAL;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">29</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    tempError: STRING;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">43</Single>
@@ -1803,9 +1843,9 @@
                 <Single Name="Text" Type="string">    </Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">38</Single>
+                <Single Name="Id" Type="long">53</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">    tempInternalVariables: ARRAY [1..ParameterList.uiMaxInternalVars] OF LREAL;</Single>
+                <Single Name="Text" Type="string">    tempInternalVariables: ARRAY [0..ParameterList.uiMaxInternalVars] OF LREAL;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">6</Single>
@@ -1820,7 +1860,7 @@
             </Array>
           </Single>
         </Single>
-        <Single Name="UniqueIdGenerator" Type="string">51</Single>
+        <Single Name="UniqueIdGenerator" Type="string">61</Single>
         <Single Name="POULevel" Type="{8e575c5b-1d37-49c6-941b-5c0ec7874787}">Standard</Single>
         <List Name="ChildObjectGuids" Type="System.Collections.ArrayList" />
         <Single Name="AddAttributeSubsequent" Type="bool">False</Single>
@@ -1864,7 +1904,7 @@
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
           <Single Type="System.Guid">3b83b776-fb25-43b8-99f2-3c507c9143fc</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638424952391820530</Single>
+        <Single Name="Timestamp" Type="long">638425494529708273</Single>
       </Single>
       <Single Name="Object" Type="{6f9dac99-8de1-4efc-8465-68ac443b7d08}" Method="IArchivable">
         <Single Name="SpecialFunc" Type="{0db3d7bb-cde0-4416-9a7b-ce49a0124323}">None</Single>
@@ -2523,6 +2563,26 @@
                 <Single Name="Text" Type="string">// are evaluated left to right from the evaluator.</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">608</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">//</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">611</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">// The return value signifies whether the operation has been successfully completed. </Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">609</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">// This function should only return false, when we run out of internal variables</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">613</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">// or there are no tokens.</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">435</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">{attribute 'qualified_only'}</Single>
@@ -2685,7 +2745,7 @@
             </Array>
           </Single>
         </Single>
-        <Single Name="UniqueIdGenerator" Type="string">607</Single>
+        <Single Name="UniqueIdGenerator" Type="string">613</Single>
         <Single Name="POULevel" Type="{8e575c5b-1d37-49c6-941b-5c0ec7874787}">Standard</Single>
         <List Name="ChildObjectGuids" Type="System.Collections.ArrayList" />
         <Single Name="AddAttributeSubsequent" Type="bool">False</Single>
@@ -2743,7 +2803,7 @@
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
           <Single Type="System.Guid">3b83b776-fb25-43b8-99f2-3c507c9143fc</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638424952391860424</Single>
+        <Single Name="Timestamp" Type="long">638425501290522426</Single>
       </Single>
       <Single Name="Object" Type="{6f9dac99-8de1-4efc-8465-68ac443b7d08}" Method="IArchivable">
         <Single Name="SpecialFunc" Type="{0db3d7bb-cde0-4416-9a7b-ce49a0124323}">None</Single>
@@ -2754,6 +2814,11 @@
                 <Single Name="Id" Type="long">1182</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">IF sExpression = '' THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1522</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    sError := 'Empty expression';</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1183</Single>
@@ -2767,6 +2832,16 @@
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1185</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string"></Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1520</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">sError := '';</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1521</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string"></Single>
               </Single>
@@ -2818,7 +2893,22 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1194</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">    IF sExpression[i] = 0 OR_ELSE tempIndex &gt; ParameterList.uiMaxExpressionTokens THEN</Single>
+                <Single Name="Text" Type="string">    IF sExpression[i] = 0 THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1525</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">        EXIT;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1523</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    ELSIF tempIndex &gt; ParameterList.uiMaxExpressionTokens THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1524</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">        sError := 'Too many expressions';</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1195</Single>
@@ -2961,6 +3051,11 @@
                 <Single Name="Text" Type="string">            IF tempVarOpen OR_ELSE tempNumOpen THEN</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1526</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                sError := Standard.CONCAT('Unexpected VARIABLE "\" start at token ', TO_STRING(i));</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1223</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                RETURN;</Single>
@@ -3053,12 +3148,12 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1246</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">            IF tempVarOpen THEN</Single>
+                <Single Name="Text" Type="string">            IF tempNumOpen OR_ELSE tempVarOpen THEN</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1247</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;</Single>
+                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1248</Single>
@@ -3077,6 +3172,11 @@
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1251</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                tempNumOpen := FALSE;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1540</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                tempVarOpen := FALSE;</Single>
               </Single>
@@ -3107,71 +3207,6 @@
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1257</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                    tempFunArgsCount := tempFunArgsCount + 1;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1258</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                END_IF</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1259</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">            ELSIF tempNumOpen THEN</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1260</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1261</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1262</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                </Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1263</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempValueStr := '';</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1264</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempNumOpen := FALSE;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1265</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                </Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1266</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempIndex := tempIndex + 1;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1267</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.uiCountTokens := tempIndex;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1268</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                </Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1269</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                IF tempFunEndDetected THEN</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1270</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                    tempFunArgsCount := tempFunArgsCount + 1;</Single>
               </Single>
@@ -3236,6 +3271,31 @@
                 <Single Name="Text" Type="string">                    IF typExpression.atTokens[tempFunIndex].uiArgsCount &gt; tempFunArgsCount THEN</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1547</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                        sError := Standard.CONCAT('Not enough arguments for variable function ', typExpression.atTokens[tempFunIndex].sIdentifier);</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1548</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                        sError := Standard.CONCAT(sError, ', expected: ');</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1549</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                        sError := Standard.CONCAT(sError, TO_STRING(typExpression.atTokens[tempFunIndex].uiArgsCount));</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1550</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                        sError := Standard.CONCAT(sError, ', got: ');</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1541</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                        sError := Standard.CONCAT(sError, TO_STRING(tempFunArgsCount));</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1279</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                        RETURN;</Single>
@@ -3249,6 +3309,31 @@
                 <Single Name="Id" Type="long">1281</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                ELSIF typExpression.atTokens[tempFunIndex].uiArgsCount &lt;&gt; tempFunArgsCount THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1542</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                    sError := Standard.CONCAT('Mismatch arguments count for function ', typExpression.atTokens[tempFunIndex].sIdentifier);</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1543</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                    sError := Standard.CONCAT(sError, ', expected: ');</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1544</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                    sError := Standard.CONCAT(sError, TO_STRING(typExpression.atTokens[tempFunIndex].uiArgsCount));</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1545</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                    sError := Standard.CONCAT(sError, ', got: ');</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1546</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                    sError := Standard.CONCAT(sError, TO_STRING(tempFunArgsCount));</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1511</Single>
@@ -3269,6 +3354,16 @@
                 <Single Name="Id" Type="long">1515</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                IF tempFunArgsCount &gt; Constants.MAX_FUN_ARGS THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1551</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                    sError := Standard.CONCAT('Too many function arguments (more than ', TO_STRING(Constants.MAX_FUN_ARGS));</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1552</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                    sError := Standard.CONCAT(sError, ')');</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1282</Single>
@@ -3336,6 +3431,11 @@
                 <Single Name="Text" Type="string">            IF NOT tempFunOpen THEN</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1553</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                sError := Standard.CONCAT('Unexpected COMMA "," outside of function at token ', TO_STRING(i));</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1303</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                RETURN;</Single>
@@ -3343,12 +3443,12 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1304</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">            ELSIF tempVarOpen THEN</Single>
+                <Single Name="Text" Type="string">            ELSIF tempNumOpen OR_ELSE tempVarOpen THEN</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1305</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;</Single>
+                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1306</Single>
@@ -3366,6 +3466,11 @@
                 <Single Name="Text" Type="string">                tempValueStr := '';</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1554</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                tempNumOpen := FALSE;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1309</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                tempVarOpen := FALSE;</Single>
@@ -3377,51 +3482,6 @@
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1311</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempIndex := tempIndex + 1;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1312</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.uiCountTokens := tempIndex;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1313</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">            ELSIF tempNumOpen THEN</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1314</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1315</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1316</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                </Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1317</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempValueStr := '';</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1318</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempNumOpen := FALSE;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1319</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                </Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1320</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                tempIndex := tempIndex + 1;</Single>
               </Single>
@@ -3464,6 +3524,11 @@
                 <Single Name="Id" Type="long">1328</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">            IF NOT tempNumOpen THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1555</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                sError := Standard.CONCAT('Unexpected DOT "." outside of number at token ', TO_STRING(i));</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1329</Single>
@@ -3511,94 +3576,74 @@
                 <Single Name="Text" Type="string">        Constants.CHAR_DIV, Constants.CHAR_EXP, Constants.CHAR_MOD:</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1337</Single>
+                <Single Name="Id" Type="long">1556</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">            IF tempVarOpen THEN</Single>
+                <Single Name="Text" Type="string">            IF tempNumOpen OR_ELSE tempVarOpen THEN</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1338</Single>
+                <Single Name="Id" Type="long">1557</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;</Single>
+                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1339</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1340</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                </Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1341</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempValueStr := '';</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1342</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempVarOpen := FALSE;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1343</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                </Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1344</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                tempIndex := tempIndex + 1;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1345</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.uiCountTokens := tempIndex;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1346</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">            ELSIF tempNumOpen THEN</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1347</Single>
-                <Null Name="Tag" />
-                <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;</Single>
-              </Single>
-              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1348</Single>
+                <Single Name="Id" Type="long">1558</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1349</Single>
+                <Single Name="Id" Type="long">1559</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                </Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1350</Single>
+                <Single Name="Id" Type="long">1560</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                tempValueStr := '';</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1351</Single>
+                <Single Name="Id" Type="long">1561</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                tempNumOpen := FALSE;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1352</Single>
+                <Single Name="Id" Type="long">1562</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                tempVarOpen := FALSE;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1563</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                </Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1353</Single>
+                <Single Name="Id" Type="long">1564</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                tempIndex := tempIndex + 1;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">1354</Single>
+                <Single Name="Id" Type="long">1565</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                typExpression.uiCountTokens := tempIndex;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1566</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                </Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1567</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                IF tempFunEndDetected THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1568</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                    tempFunArgsCount := tempFunArgsCount + 1;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1569</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                END_IF</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1355</Single>
@@ -3744,6 +3789,11 @@
                 <Single Name="Id" Type="long">1379</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">            IF tempFunOpen THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1570</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                sError := Standard.CONCAT('Nested function calls are not supported, found at token ', TO_STRING(i));</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1380</Single>
@@ -4021,6 +4071,11 @@
                 <Single Name="Text" Type="string">                // Invalid function name</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1572</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                sError := Standard.CONCAT('Unknown function ', tempIdentifierStr);</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1440</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                RETURN;</Single>
@@ -4049,6 +4104,11 @@
                 <Single Name="Id" Type="long">1492</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">                // If not, invalid expression</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1574</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">                sError := Standard.CONCAT('Expected GROUP_START "(" for function call at token ', TO_STRING((i + 1)));</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1486</Single>
@@ -4134,6 +4194,11 @@
                 <Single Name="Id" Type="long">1450</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">            // Invalid expression</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1575</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">            sError := Standard.CONCAT('Invalid character at token ', TO_STRING(i));</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1451</Single>
@@ -4317,6 +4382,11 @@
                 <Single Name="Text" Type="string">    typExpression: typTokenizedExpression;    // The tokenized expression</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">1517</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    sError: STRING;                           // Error message</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">1094</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">END_VAR</Single>
@@ -4479,7 +4549,7 @@
             </Array>
           </Single>
         </Single>
-        <Single Name="UniqueIdGenerator" Type="string">1516</Single>
+        <Single Name="UniqueIdGenerator" Type="string">1575</Single>
         <Single Name="POULevel" Type="{8e575c5b-1d37-49c6-941b-5c0ec7874787}">Standard</Single>
         <List Name="ChildObjectGuids" Type="System.Collections.ArrayList" />
         <Single Name="AddAttributeSubsequent" Type="bool">False</Single>
@@ -6343,7 +6413,7 @@
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
           <Single Type="System.Guid">3b83b776-fb25-43b8-99f2-3c507c9143fc</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638420499463195076</Single>
+        <Single Name="Timestamp" Type="long">638425492299267378</Single>
       </Single>
       <Single Name="Object" Type="{6f9dac99-8de1-4efc-8465-68ac443b7d08}" Method="IArchivable">
         <Single Name="SpecialFunc" Type="{0db3d7bb-cde0-4416-9a7b-ce49a0124323}">None</Single>
@@ -6428,7 +6498,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">37</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">        typStep.atTokens[i].lrValue := lrResult;</Single>
+                <Single Name="Text" Type="string">        typStep.atTokens[i].lrValue := tempResult;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">36</Single>
@@ -6443,7 +6513,12 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">39</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">    IF NOT FuEvaluateOperation(tempMaxCursor, typStep.atTokens, i, alrVariables, alrInternalVariables, lrResult =&gt; lrResult, sError =&gt; sError) THEN</Single>
+                <Single Name="Text" Type="string">    IF NOT FuEvaluateOperation(tempMaxCursor, typStep.atTokens, i, alrVariables, alrInternalVariables, lrResult =&gt; tempResult, sError =&gt; tempError) THEN</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">56</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">        sError := tempError;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">45</Single>
@@ -6461,9 +6536,14 @@
                 <Single Name="Text" Type="string">END_FOR</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
-                <Single Name="Id" Type="long">34</Single>
+                <Single Name="Id" Type="long">54</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string"></Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">34</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">lrResult := tempResult;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">33</Single>
@@ -6587,6 +6667,16 @@
                 <Single Name="Text" Type="string">    tempMaxCursor: UINT;</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">53</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    tempResult: LREAL;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
+                <Single Name="Id" Type="long">55</Single>
+                <Null Name="Tag" />
+                <Single Name="Text" Type="string">    tempError: STRING;</Single>
+              </Single>
+              <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">6</Single>
                 <Null Name="Tag" />
                 <Single Name="Text" Type="string">END_VAR</Single>
@@ -6599,7 +6689,7 @@
             </Array>
           </Single>
         </Single>
-        <Single Name="UniqueIdGenerator" Type="string">52</Single>
+        <Single Name="UniqueIdGenerator" Type="string">56</Single>
         <Single Name="POULevel" Type="{8e575c5b-1d37-49c6-941b-5c0ec7874787}">Standard</Single>
         <List Name="ChildObjectGuids" Type="System.Collections.ArrayList" />
         <Single Name="AddAttributeSubsequent" Type="bool">False</Single>

@@ -20,6 +20,8 @@ END_VAR
 VAR
     i: UINT;
     tempMaxCursor: UINT;
+    tempResult: LREAL;
+    tempError: STRING;
 END_VAR
 (*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
 IF typStep.uiCountTokens = 0 THEN
@@ -37,12 +39,14 @@ FOR i := 0 TO tempMaxCursor BY 1 DO
     IF i > 0 AND_THEN typStep.atTokens[i].eType = eTokenType.MATH_OP THEN
         i := i - 1;
         typStep.atTokens[i].eType := eTokenType.NUMBER;
-        typStep.atTokens[i].lrValue := lrResult;
+        typStep.atTokens[i].lrValue := tempResult;
     END_IF
     
-    IF NOT FuEvaluateOperation(tempMaxCursor, typStep.atTokens, i, alrVariables, alrInternalVariables, lrResult => lrResult, sError => sError) THEN
+    IF NOT FuEvaluateOperation(tempMaxCursor, typStep.atTokens, i, alrVariables, alrInternalVariables, lrResult => tempResult, sError => tempError) THEN
+        sError := tempError;
         RETURN;
     END_IF
 END_FOR
 
+lrResult := tempResult;
 FuEvaluateStep := TRUE;

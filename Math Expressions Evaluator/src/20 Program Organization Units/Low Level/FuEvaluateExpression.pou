@@ -16,13 +16,15 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
     lrResult: LREAL;                                   // Result output
-    sError: STRING;                                    // Error message (may also contain nonsense if function returns TRUE)
+    sError: STRING;                                    // Error message
 END_VAR
 {library PRIVATE}
 VAR
     i: UINT;
+    tempResult: LREAL;
+    tempError: STRING;
     
-    tempInternalVariables: ARRAY [1..ParameterList.uiMaxInternalVars] OF LREAL;
+    tempInternalVariables: ARRAY [0..ParameterList.uiMaxInternalVars] OF LREAL;
 END_VAR
 (*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
 IF typExpressionSteps.uiCountSteps = 0 THEN
@@ -31,17 +33,22 @@ IF typExpressionSteps.uiCountSteps = 0 THEN
 END_IF
 
 FOR i := 0 TO (typExpressionSteps.uiCountSteps - 1) BY 1 DO
-    IF NOT FuEvaluateStep(typExpressionSteps.atSteps[i],  alrVariables, tempInternalVariables, lrResult => lrResult, sError => sError) THEN
+    IF NOT FuEvaluateStep(typExpressionSteps.atSteps[i],  alrVariables, tempInternalVariables, lrResult => tempResult, sError => tempError) THEN
+        sError := tempError;
         RETURN;
     END_IF
+    
+    // Always have the result in internal variable 0
+    tempInternalVariables[0] := tempResult;
     
     IF
         typExpressionSteps.atSteps[i].uiInternalVariableTarget > 0 AND_THEN
         typExpressionSteps.atSteps[i].uiInternalVariableTarget >= 1 AND_THEN
         typExpressionSteps.atSteps[i].uiInternalVariableTarget <= ParameterList.uiMaxInternalVars
     THEN
-        tempInternalVariables[typExpressionSteps.atSteps[i].uiInternalVariableTarget] := lrResult;
+        tempInternalVariables[typExpressionSteps.atSteps[i].uiInternalVariableTarget] := tempResult;
     END_IF
 END_FOR
 
+lrResult := tempResult;
 FuEvaluateExpression := TRUE;

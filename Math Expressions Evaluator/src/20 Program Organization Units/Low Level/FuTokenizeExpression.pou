@@ -10,6 +10,7 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
     typExpression: typTokenizedExpression;    // The tokenized expression
+    sError: STRING;                           // Error message
 END_VAR
 {library PRIVATE}
 VAR
@@ -43,8 +44,11 @@ VAR // Data used throughout each loop iteration
 END_VAR
 (*#-#-#-#-#-#-#-#-#-#---Implementation---#-#-#-#-#-#-#-#-#-#-#-#-#*)
 IF sExpression = '' THEN
+    sError := 'Empty expression';
     RETURN;
 END_IF
+
+sError := '';
 
 // Assert a clean string (CODESYS does not assert that the whole string contains NUL bytes, only sets the first byte as NUL byte!)
 // tempValueStr is VAR_TEMP and should get completely initialized as an empty string (all bytes = NUL), but the truth is the memory space
@@ -55,7 +59,10 @@ FOR i := 0 TO SIZEOF(tempValueStr) BY 1 DO
 END_FOR
 
 FOR i := 0 TO 255 BY 1 DO
-    IF sExpression[i] = 0 OR_ELSE tempIndex > ParameterList.uiMaxExpressionTokens THEN
+    IF sExpression[i] = 0 THEN
+        EXIT;
+    ELSIF tempIndex > ParameterList.uiMaxExpressionTokens THEN
+        sError := 'Too many expressions';
         EXIT;
     END_IF
     
@@ -84,6 +91,7 @@ FOR i := 0 TO 255 BY 1 DO
         
         Constants.CHAR_VARIABLE:
             IF tempVarOpen OR_ELSE tempNumOpen THEN
+                sError := Standard.CONCAT('Unexpected VARIABLE "\" start at token ', TO_STRING(i));
                 RETURN;
             END_IF
             
@@ -102,25 +110,13 @@ FOR i := 0 TO 255 BY 1 DO
         Constants.CHAR_GROUP_END:
             tempFunEndDetected := (tempFunOpen AND_THEN tempGroupNum = typExpression.atTokens[tempFunIndex].uiGroupNumber);
             
-            IF tempVarOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
-                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
-                
-                tempValueStr := '';
-                tempVarOpen := FALSE;
-                
-                tempIndex := tempIndex + 1;
-                typExpression.uiCountTokens := tempIndex;
-                
-                IF tempFunEndDetected THEN
-                    tempFunArgsCount := tempFunArgsCount + 1;
-                END_IF
-            ELSIF tempNumOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+            IF tempNumOpen OR_ELSE tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);
                 typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
                 
                 tempValueStr := '';
                 tempNumOpen := FALSE;
+                tempVarOpen := FALSE;
                 
                 tempIndex := tempIndex + 1;
                 typExpression.uiCountTokens := tempIndex;
@@ -139,13 +135,25 @@ FOR i := 0 TO 255 BY 1 DO
                 // or for fixed args functions, we have that many arguments as currently stored
                 IF typExpression.atTokens[tempFunIndex].xArgsVariable THEN
                     IF typExpression.atTokens[tempFunIndex].uiArgsCount > tempFunArgsCount THEN
+                        sError := Standard.CONCAT('Not enough arguments for variable function ', typExpression.atTokens[tempFunIndex].sIdentifier);
+                        sError := Standard.CONCAT(sError, ', expected: ');
+                        sError := Standard.CONCAT(sError, TO_STRING(typExpression.atTokens[tempFunIndex].uiArgsCount));
+                        sError := Standard.CONCAT(sError, ', got: ');
+                        sError := Standard.CONCAT(sError, TO_STRING(tempFunArgsCount));
                         RETURN;
                     END_IF
                 ELSIF typExpression.atTokens[tempFunIndex].uiArgsCount <> tempFunArgsCount THEN
+                    sError := Standard.CONCAT('Mismatch arguments count for function ', typExpression.atTokens[tempFunIndex].sIdentifier);
+                    sError := Standard.CONCAT(sError, ', expected: ');
+                    sError := Standard.CONCAT(sError, TO_STRING(typExpression.atTokens[tempFunIndex].uiArgsCount));
+                    sError := Standard.CONCAT(sError, ', got: ');
+                    sError := Standard.CONCAT(sError, TO_STRING(tempFunArgsCount));
                     RETURN;
                 END_IF
                 
                 IF tempFunArgsCount > Constants.MAX_FUN_ARGS THEN
+                    sError := Standard.CONCAT('Too many function arguments (more than ', TO_STRING(Constants.MAX_FUN_ARGS));
+                    sError := Standard.CONCAT(sError, ')');
                     RETURN;
                 END_IF
                 
@@ -159,22 +167,15 @@ FOR i := 0 TO 255 BY 1 DO
         
         Constants.CHAR_COMMA:
             IF NOT tempFunOpen THEN
+                sError := Standard.CONCAT('Unexpected COMMA "," outside of function at token ', TO_STRING(i));
                 RETURN;
-            ELSIF tempVarOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
-                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
-                
-                tempValueStr := '';
-                tempVarOpen := FALSE;
-                
-                tempIndex := tempIndex + 1;
-                typExpression.uiCountTokens := tempIndex;
-            ELSIF tempNumOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+            ELSIF tempNumOpen OR_ELSE tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);
                 typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
                 
                 tempValueStr := '';
                 tempNumOpen := FALSE;
+                tempVarOpen := FALSE;
                 
                 tempIndex := tempIndex + 1;
                 typExpression.uiCountTokens := tempIndex;
@@ -185,6 +186,7 @@ FOR i := 0 TO 255 BY 1 DO
         
         Constants.CHAR_DOT:
             IF NOT tempNumOpen THEN
+                sError := Standard.CONCAT('Unexpected DOT "." outside of number at token ', TO_STRING(i));
                 RETURN;
             END_IF
             
@@ -194,24 +196,20 @@ FOR i := 0 TO 255 BY 1 DO
         // "-" must be handled differently, as we may need to handle it as a sign
        Constants. CHAR_ADD, Constants.CHAR_SUB, Constants.CHAR_MUL,
         Constants.CHAR_DIV, Constants.CHAR_EXP, Constants.CHAR_MOD:
-            IF tempVarOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.VARIABLE;
-                typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
-                
-                tempValueStr := '';
-                tempVarOpen := FALSE;
-                
-                tempIndex := tempIndex + 1;
-                typExpression.uiCountTokens := tempIndex;
-            ELSIF tempNumOpen THEN
-                typExpression.atTokens[tempIndex].eType := eTokenType.NUMBER;
+            IF tempNumOpen OR_ELSE tempVarOpen THEN
+                typExpression.atTokens[tempIndex].eType := SEL(tempVarOpen, eTokenType.NUMBER, eTokenType.VARIABLE);
                 typExpression.atTokens[tempIndex].lrValue := STRING_TO_LREAL(tempValueStr);
                 
                 tempValueStr := '';
                 tempNumOpen := FALSE;
+                tempVarOpen := FALSE;
                 
                 tempIndex := tempIndex + 1;
                 typExpression.uiCountTokens := tempIndex;
+                
+                IF tempFunEndDetected THEN
+                    tempFunArgsCount := tempFunArgsCount + 1;
+                END_IF
             END_IF
             
             // If operator is ADD/SUB, then peek ahead to see if a number follows immediately (it's a negative number and not an operation)
@@ -241,6 +239,7 @@ FOR i := 0 TO 255 BY 1 DO
         ELSIF tempChar >= Constants.ASCII_ALPHA_START AND_THEN tempChar <= Constants.ASCII_ALPHA_END THEN
             // We can not call a function inside a function
             IF tempFunOpen THEN
+                sError := Standard.CONCAT('Nested function calls are not supported, found at token ', TO_STRING(i));
                 RETURN;
             END_IF
             
@@ -296,12 +295,14 @@ FOR i := 0 TO 255 BY 1 DO
                 typExpression.atTokens[tempIndex].xArgsVariable := TRUE;
             ELSE
                 // Invalid function name
+                sError := Standard.CONCAT('Unknown function ', tempIdentifierStr);
                 RETURN;
             END_IF
             
             // Peek at the next expression token and check if it's a GROUP_START token
             IF sExpression[(i + 1)] <> Constants.CHAR_GROUP_START THEN
                 // If not, invalid expression
+                sError := Standard.CONCAT('Expected GROUP_START "(" for function call at token ', TO_STRING((i + 1)));
                 RETURN;
             END_IF
             
@@ -319,6 +320,7 @@ FOR i := 0 TO 255 BY 1 DO
             tempFunArgsCount := 0;
         ELSE
             // Invalid expression
+            sError := Standard.CONCAT('Invalid character at token ', TO_STRING(i));
             RETURN;
         END_IF
     END_CASE

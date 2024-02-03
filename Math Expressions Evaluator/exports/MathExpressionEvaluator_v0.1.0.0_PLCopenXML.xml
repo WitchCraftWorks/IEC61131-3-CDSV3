@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 5" creationDateTime="2024-02-03T09:47:36.8216988" />
-  <contentHeader name="Math Expression Evaluator" version="0.1.0.0" modificationDateTime="2024-02-03T09:43:29.7262259" organization="GG">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 5" creationDateTime="2024-02-03T14:32:50.0588898" />
+  <contentHeader name="Math Expression Evaluator" version="0.1.0.0" modificationDateTime="2024-02-03T14:32:26.9104156" organization="GG">
     <Comment>The Math Expression Evaluator evaluates math expressions (terms).
 
 See the documentation folder for an introduction (the folder itself).</Comment>
@@ -2282,6 +2282,7 @@ FOR i := 0 TO 255 BY 1 DO
         EXIT;
     END_IF
     
+    tempFunEndDetected := FALSE;
     tempIdentifierStr := '';
     tempPtrByte := 0;
     
@@ -2422,10 +2423,6 @@ FOR i := 0 TO 255 BY 1 DO
                 
                 tempIndex := tempIndex + 1;
                 typExpression.uiCountTokens := tempIndex;
-                
-                IF tempFunEndDetected THEN
-                    tempFunArgsCount := tempFunArgsCount + 1;
-                END_IF
             END_IF
             
             // If operator is ADD/SUB, then peek ahead to see if a number follows immediately (it's a negative number and not an operation)

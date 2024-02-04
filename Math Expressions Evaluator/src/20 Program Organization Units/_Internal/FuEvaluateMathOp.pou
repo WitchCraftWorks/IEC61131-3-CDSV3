@@ -81,12 +81,12 @@ ELSIF tempOperatorByte = Constants.CHAR_DIV THEN
     END_IF
     
     lrResult := tempNumber1 / tempNumber2;
-ELSIF tempOperatorByte = Constants.CHAR_MUL THEN
+ELSIF tempOperatorByte = Constants.CHAR_EXP THEN
     lrResult := EXPT(tempNumber1, tempNumber2);
 ELSIF tempOperatorByte = Constants.CHAR_MOD THEN
     lrResult := LINT_TO_LREAL((LREAL_TO_LINT(tempNumber1) MOD LREAL_TO_LINT(tempNumber2)));
 ELSE
-    sError := Standard.CONCAT('Not a variable token at position ', TO_STRING(uiCursor));
+    sError := Standard.CONCAT('Unknown math operator at position ', TO_STRING(uiCursor));
     RETURN;
 END_IF
 

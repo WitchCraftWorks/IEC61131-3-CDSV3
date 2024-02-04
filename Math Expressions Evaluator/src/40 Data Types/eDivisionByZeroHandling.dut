@@ -7,7 +7,7 @@
 {attribute 'strict'}
 TYPE eDivisionByZeroHandling :
 (
-	ERROR := 0,
+    ERROR := 0,
     RESULT_IS_ZERO,
     DIVISOR_IS_ONE
 );

@@ -3,7 +3,7 @@
 {attribute 'strict'}
 TYPE eTokenType :
 (
-	INVALID := 0,
+    INVALID := 0,
     NUMBER,
     VARIABLE,
     GROUP_START,

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 5" creationDateTime="2024-02-03T14:32:50.0588898" />
-  <contentHeader name="Math Expression Evaluator" version="0.1.0.0" modificationDateTime="2024-02-03T14:32:26.9104156" organization="GG">
+  <fileHeader companyName="" productName="CODESYS" productVersion="CODESYS V3.5 SP18 Patch 5" creationDateTime="2024-02-04T11:49:45.7079355" />
+  <contentHeader name="Math Expression Evaluator" version="0.1.0.0" modificationDateTime="2024-02-04T11:49:30.3793356" organization="GG">
     <Comment>The Math Expression Evaluator evaluates math expressions (terms).
 
 See the documentation folder for an introduction (the folder itself).</Comment>
@@ -710,12 +710,12 @@ ELSIF tempOperatorByte = Constants.CHAR_DIV THEN
     END_IF
     
     lrResult := tempNumber1 / tempNumber2;
-ELSIF tempOperatorByte = Constants.CHAR_MUL THEN
+ELSIF tempOperatorByte = Constants.CHAR_EXP THEN
     lrResult := EXPT(tempNumber1, tempNumber2);
 ELSIF tempOperatorByte = Constants.CHAR_MOD THEN
     lrResult := LINT_TO_LREAL((LREAL_TO_LINT(tempNumber1) MOD LREAL_TO_LINT(tempNumber2)));
 ELSE
-    sError := Standard.CONCAT('Not a variable token at position ', TO_STRING(uiCursor));
+    sError := Standard.CONCAT('Unknown math operator at position ', TO_STRING(uiCursor));
     RETURN;
 END_IF
 

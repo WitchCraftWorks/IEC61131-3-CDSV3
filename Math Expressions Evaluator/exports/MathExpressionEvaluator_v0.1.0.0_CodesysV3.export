@@ -581,7 +581,7 @@
         <Array Name="EmbeddedTypeGuids" Type="System.Guid">
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638420453794744160</Single>
+        <Single Name="Timestamp" Type="long">638426425020953423</Single>
       </Single>
       <Single Name="Object" Type="{2db5746d-d284-4425-9f7f-2663a34b0ebc}" Method="IArchivable">
         <Single Name="Interface" Type="{a9ed5b7e-75c5-4651-af16-d2c27e98cb94}" Method="IArchivable">
@@ -630,7 +630,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">6</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">	ERROR := 0,</Single>
+                <Single Name="Text" Type="string">    ERROR := 0,</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">9</Single>
@@ -5343,7 +5343,7 @@
           <Single Type="System.Guid">a9ed5b7e-75c5-4651-af16-d2c27e98cb94</Single>
           <Single Type="System.Guid">3b83b776-fb25-43b8-99f2-3c507c9143fc</Single>
         </Array>
-        <Single Name="Timestamp" Type="long">638420517528113635</Single>
+        <Single Name="Timestamp" Type="long">638426441631882177</Single>
       </Single>
       <Single Name="Object" Type="{6f9dac99-8de1-4efc-8465-68ac443b7d08}" Method="IArchivable">
         <Single Name="SpecialFunc" Type="{0db3d7bb-cde0-4416-9a7b-ce49a0124323}">None</Single>
@@ -5618,7 +5618,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">62</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">ELSIF tempOperatorByte = Constants.CHAR_MUL THEN</Single>
+                <Single Name="Text" Type="string">ELSIF tempOperatorByte = Constants.CHAR_EXP THEN</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">63</Single>
@@ -5643,7 +5643,7 @@
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">44</Single>
                 <Null Name="Tag" />
-                <Single Name="Text" Type="string">    sError := Standard.CONCAT('Not a variable token at position ', TO_STRING(uiCursor));</Single>
+                <Single Name="Text" Type="string">    sError := Standard.CONCAT('Unknown math operator at position ', TO_STRING(uiCursor));</Single>
               </Single>
               <Single Type="{a5de0b0b-1cb5-4913-ac21-9d70293ec00d}" Method="IArchivable">
                 <Single Name="Id" Type="long">93</Single>
@@ -5824,7 +5824,7 @@
             </Array>
           </Single>
         </Single>
-        <Single Name="UniqueIdGenerator" Type="string">137</Single>
+        <Single Name="UniqueIdGenerator" Type="string">138</Single>
         <Single Name="POULevel" Type="{8e575c5b-1d37-49c6-941b-5c0ec7874787}">Standard</Single>
         <List Name="ChildObjectGuids" Type="System.Collections.ArrayList" />
         <Single Name="AddAttributeSubsequent" Type="bool">False</Single>
